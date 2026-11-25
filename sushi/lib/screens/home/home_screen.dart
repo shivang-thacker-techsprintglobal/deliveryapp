@@ -96,6 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFFF4A73D),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+        // On My Orders (and other sections), show back to Home instead of only the menu icon.
+        leading: _currentIndex == 0
+            ? null
+            : IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => setState(() => _currentIndex = 0),
+              ),
       ),
       drawer: _buildDrawer(),
       body: _getContent(),

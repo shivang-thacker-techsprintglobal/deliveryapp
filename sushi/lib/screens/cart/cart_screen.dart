@@ -105,7 +105,7 @@ class CartScreen extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Order placed successfully! 🚀')),
                             );
-                            Navigator.pushReplacement(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => const MyOrdersScreen()),
                             );

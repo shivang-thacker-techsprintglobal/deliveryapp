@@ -31,6 +31,14 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         centerTitle: true,
         backgroundColor: const Color(0xFFF4A73D),
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          },
+        ),
       ),
       body: BlocBuilder<OrdersCubit, OrdersState>(
         builder: (context, state) {
