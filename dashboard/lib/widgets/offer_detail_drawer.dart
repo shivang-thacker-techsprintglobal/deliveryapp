@@ -71,7 +71,7 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
                 Text(
                   widget.offer.title.isNotEmpty
                       ? widget.offer.title
-                      : 'قسم العرض',
+                      : S.offerSection,
                   style: AppTheme.sectionTitle,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -104,7 +104,7 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'معلومات القسم',
+            S.sectionInfo,
             style: AppTheme.bodyText.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 16),
@@ -123,18 +123,18 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
             const SizedBox(height: 16),
           ],
           _infoRow(
-            'السطر الأول:',
+            S.lineOneColon,
             '${widget.offer.nameline1} / ${widget.offer.nameline1Ar}',
           ),
           const SizedBox(height: 8),
           _infoRow(
-            'السطر الثاني:',
+            S.lineTwoColon,
             '${widget.offer.nameline2} / ${widget.offer.nameline2Ar}',
           ),
           const SizedBox(height: 8),
-          _infoRow('الوقت:', '${widget.offer.time} / ${widget.offer.timeAr}'),
+          _infoRow(S.timeColon, '${widget.offer.time} / ${widget.offer.timeAr}'),
           const SizedBox(height: 8),
-          _infoRow('الخصم:', '${widget.offer.discount}%'),
+          _infoRow(S.discountColon, '${widget.offer.discount}%'),
         ],
       ),
     );
@@ -162,11 +162,11 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('عناصر العرض', style: AppTheme.sectionTitle),
+            Text(S.offerItems, style: AppTheme.sectionTitle),
             ElevatedButton.icon(
               onPressed: () => _showItemDialog(),
               icon: const Icon(Icons.add, size: 16),
-              label: const Text('إضافة عنصر', style: TextStyle(fontSize: 12)),
+              label: Text(S.addItem, style: TextStyle(fontSize: 12)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
                 foregroundColor: AppTheme.primary,
@@ -189,7 +189,7 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              'لا توجد عناصر مضافة',
+              S.noOfferItems,
               style: AppTheme.bodyText.copyWith(color: AppTheme.textMuted),
             ),
           )
@@ -293,7 +293,7 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setState) => AlertDialog(
           title: Text(
-            item == null ? 'إضافة عنصر للعرض' : 'تعديل العنصر',
+            item == null ? S.addOfferItem : S.editItem,
             style: AppTheme.sectionTitle,
           ),
           content: SizedBox(
@@ -304,38 +304,38 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
                 children: [
                   TextField(
                     controller: nameC,
-                    decoration: const InputDecoration(
-                      labelText: 'اسم العنصر (EN)',
+                    decoration: InputDecoration(
+                      labelText: S.itemNameEn,
                     ),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: nameArC,
-                    decoration: const InputDecoration(
-                      labelText: 'اسم العنصر (AR)',
+                    decoration: InputDecoration(
+                      labelText: S.itemNameAr,
                     ),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: descC,
-                    decoration: const InputDecoration(labelText: 'الوصف (EN)'),
+                    decoration: InputDecoration(labelText: S.descriptionEn),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: descArC,
-                    decoration: const InputDecoration(labelText: 'الوصف (AR)'),
+                    decoration: InputDecoration(labelText: S.descriptionAr),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: priceC,
-                    decoration: const InputDecoration(
-                      labelText: 'السعر بعد الخصم (EGP)',
+                    decoration: InputDecoration(
+                      labelText: S.priceAfterDiscount,
                     ),
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: AppTheme.spaceM),
                   ImageUploadField(
-                    label: 'صورة العنصر',
+                    label: S.itemImage,
                     currentImageUrl: imgC.text,
                     folderName: 'offers_items',
                     onImageUploaded: (url) {
@@ -344,7 +344,7 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
                   ),
                   const SizedBox(height: AppTheme.spaceM),
                   SwitchListTile(
-                    title: Text('متاح', style: AppTheme.bodyText),
+                    title: Text(S.available, style: AppTheme.bodyText),
                     value: isAvailable,
                     onChanged: (v) => setState(() => isAvailable = v),
                     activeThumbColor: AppTheme.primary,
@@ -439,7 +439,7 @@ class _OfferDetailDrawerState extends State<OfferDetailDrawer> {
           style: AppTheme.sectionTitle.copyWith(color: AppTheme.error),
         ),
         content: Text(
-          'هل أنت متأكد من حذف العنصر ${item.name.isNotEmpty ? item.name : item.nameAr}؟',
+          S.deleteItemMsg(item.name.isNotEmpty ? item.name : item.nameAr),
           style: AppTheme.bodyText,
         ),
         actions: [

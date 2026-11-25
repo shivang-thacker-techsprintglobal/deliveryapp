@@ -50,19 +50,20 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> loginWithGoogle() async {
-    emit(AuthLoading());
-    try {
-      final credential = await _authService.signInWithGoogle();
-      if (credential != null && credential.user != null) {
-        emit(Authenticated(credential.user!));
-      } else {
-        emit(Unauthenticated());
-      }
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
-  }
+  // Google login disabled for now
+  // Future<void> loginWithGoogle() async {
+  //   emit(AuthLoading());
+  //   try {
+  //     final credential = await _authService.signInWithGoogle();
+  //     if (credential != null && credential.user != null) {
+  //       emit(Authenticated(credential.user!));
+  //     } else {
+  //       emit(Unauthenticated());
+  //     }
+  //   } catch (e) {
+  //     emit(AuthError(e.toString()));
+  //   }
+  // }
 
   Future<void> logout() async {
     await _authService.signOut();

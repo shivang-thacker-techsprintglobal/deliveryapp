@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/order_model.dart';
 import '../../models/restaurant_model.dart';
+import '../../services/restaurant_service.dart';
 import '../../widgets/app_colors.dart';
 import '../../blocs/orders/orders_cubit.dart';
 
@@ -62,13 +63,13 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
 
     final image = await pictureRecorder.endRecording().toImage(size.toInt(), size.toInt());
     final data = await image.toByteData(format: ui.ImageByteFormat.png);
-    return BitmapDescriptor.fromBytes(data!.buffer.asUint8List());
+    return BitmapDescriptor.bytes(data!.buffer.asUint8List());
   }
 
   void _loadRestaurantInfo() async {
-    final doc = await FirebaseFirestore.instance.collection('restaurants').doc('sushir12').get();
-    if (doc.exists) {
-      setState(() => _restaurant = RestaurantModel.fromJson(doc.data()!));
+    final restaurant = await RestaurantService.fetchPrimary();
+    if (restaurant != null && mounted) {
+      setState(() => _restaurant = restaurant);
     }
   }
 
@@ -90,11 +91,15 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
           
           final order = OrderModel.fromJson(snapshot.data!.data() as Map<String, dynamic>, snapshot.data!.id);
 
-          // Auto-move camera to driver location
+          // Move camera after this frame — never animate during build.
           if (order.driverLocation != null) {
-            _mapController?.animateCamera(CameraUpdate.newLatLng(
-              LatLng(order.driverLocation!.latitude, order.driverLocation!.longitude)
-            ));
+            final driverLatLng = LatLng(
+              order.driverLocation!.latitude,
+              order.driverLocation!.longitude,
+            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _mapController?.animateCamera(CameraUpdate.newLatLng(driverLatLng));
+            });
           }
 
           return Column(

@@ -1,1 +1,33 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"educate-e464b","appId":"1:81595894097:android:ea142c416078350eabab70","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"educate-e464b","configurations":{"android":"1:81595894097:android:ea142c416078350eabab70","ios":"1:81595894097:ios:bdde8abe8fa8a7fdabab70","macos":"1:81595894097:ios:bdde8abe8fa8a7fdabab70","web":"1:81595894097:web:72df02ffa86227d0abab70","windows":"1:81595894097:web:a97a0a1019c57678abab70"}}}}}}
+{
+  "firestore": {
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "sushideliveryapp-dfc29",
+          "appId": "1:499952759339:android:8221ed0dede60d5f7f306e",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "sushideliveryapp-dfc29",
+          "configurations": {
+            "android": "1:499952759339:android:8221ed0dede60d5f7f306e",
+            "ios": "1:499952759339:ios:38878d9e1c35e3b57f306e"
+          }
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "sushideliveryapp-dfc29",
+          "appId": "1:499952759339:ios:38878d9e1c35e3b57f306e",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      }
+    }
+  }
+}

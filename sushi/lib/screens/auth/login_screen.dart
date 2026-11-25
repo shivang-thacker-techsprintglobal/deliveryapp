@@ -4,7 +4,7 @@ import '../../widgets/app_colors.dart';
 import '../../widgets/app_strings.dart';
 import '../../blocs/auth/auth_cubit.dart';
 import '../../blocs/auth/auth_state.dart';
-import 'package:sushi/services/biometric_service.dart';
+// import 'package:sushi/services/biometric_service.dart'; // fingerprint disabled
 import 'register_screen.dart';
 import 'forget_password_screen.dart';
 import '../home/home_screen.dart';
@@ -19,17 +19,14 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final BiometricService _biometricService = BiometricService();
+  // final BiometricService _biometricService = BiometricService();
 
-  void _handleBiometric() async {
-    bool authenticated = await _biometricService.authenticate();
-    if (authenticated && mounted) {
-      // In a real app, you would retrieve stored credentials
-      // For now, we'll notify user. Biometric usually works after first successful login.
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Biometric Authentication Successful!')));
-      // Navigation would happen if we had stored user credentials
-    }
-  }
+  // void _handleBiometric() async {
+  //   bool authenticated = await _biometricService.authenticate();
+  //   if (authenticated && mounted) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Biometric Authentication Successful!')));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -131,35 +128,31 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         
-                        const SizedBox(height: 20),
-                        
-                        // OR Divider
-                        Row(
-                          children: [
-                            const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: Text('OR', style: TextStyle(color: Colors.orange.shade700, fontSize: 12, fontWeight: FontWeight.bold)),
-                            ),
-                            const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 20),
-                        
-                        // Social Login Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _socialButton('assets/images/google.png', () => context.read<AuthCubit>().loginWithGoogle()),
-                            IconButton(
-                              icon: const Icon(Icons.fingerprint, size: 50, color: Color(0xFFF4A73D)),
-                              onPressed: _handleBiometric,
-                            ),
-                            _socialButton('assets/images/facebook.png', () {}),
-                          ],
-                        ),
-                        
+                        // Google / Facebook / Fingerprint login disabled for now
+                        // const SizedBox(height: 20),
+                        // Row(
+                        //   children: [
+                        //     const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
+                        //     Padding(
+                        //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                        //       child: Text('OR', style: TextStyle(color: Colors.orange.shade700, fontSize: 12, fontWeight: FontWeight.bold)),
+                        //     ),
+                        //     const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
+                        //   ],
+                        // ),
+                        // const SizedBox(height: 20),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     _socialButton('assets/images/google.png', () => context.read<AuthCubit>().loginWithGoogle()),
+                        //     IconButton(
+                        //       icon: const Icon(Icons.fingerprint, size: 50, color: Color(0xFFF4A73D)),
+                        //       onPressed: _handleBiometric,
+                        //     ),
+                        //     _socialButton('assets/images/facebook.png', () {}),
+                        //   ],
+                        // ),
+
                         const SizedBox(height: 40),
                         
                         // Bottom Link
@@ -200,11 +193,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialButton(String assetPath, VoidCallback? onTap) {
-    return InkResponse(
-      onTap: onTap,
-      radius: 35,
-      child: Image.asset(assetPath, height: 55, fit: BoxFit.contain),
-    );
-  }
+  // Widget _socialButton(String assetPath, VoidCallback? onTap) {
+  //   return InkResponse(
+  //     onTap: onTap,
+  //     radius: 35,
+  //     child: Image.asset(assetPath, height: 55, fit: BoxFit.contain),
+  //   );
+  // }
 }

@@ -82,10 +82,10 @@ class _OffersScreenState extends State<OffersScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('إدارة العروض', style: AppTheme.pageTitle),
+            Text(S.manageOffers, style: AppTheme.pageTitle),
             const SizedBox(height: 4),
             Text(
-              'عرض وإدارة العروض والخصومات',
+              S.manageOffersSub,
               style: AppTheme.bodyText.copyWith(color: AppTheme.textSecondary),
             ),
           ],
@@ -97,7 +97,7 @@ class _OffersScreenState extends State<OffersScreen> {
             onChanged: (v) => setState(() => _search = v),
             style: AppTheme.bodyText,
             decoration: InputDecoration(
-              hintText: 'بحث في العروض...',
+              hintText: S.searchOffers,
               prefixIcon: Icon(
                 Icons.search,
                 size: 18,
@@ -109,7 +109,7 @@ class _OffersScreenState extends State<OffersScreen> {
         ElevatedButton.icon(
           onPressed: () => _showOfferDialog(),
           icon: const Icon(Icons.add, size: 18),
-          label: Text('إضافة عرض'),
+          label: Text(S.addOffer),
           style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accent),
         ),
       ],
@@ -141,7 +141,7 @@ class _OffersScreenState extends State<OffersScreen> {
                   ),
                   const SizedBox(height: AppTheme.spaceM),
                   Text(
-                    'لا توجد أقسام عروض حتى الآن',
+                    S.noOffersYet,
                     style: AppTheme.bodyText.copyWith(
                       color: AppTheme.textMuted,
                     ),
@@ -184,7 +184,7 @@ class _OffersScreenState extends State<OffersScreen> {
                     Expanded(
                       flex: 3,
                       child: Text(
-                        'العرض',
+                        S.offer,
                         style: AppTheme.smallText.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -193,7 +193,7 @@ class _OffersScreenState extends State<OffersScreen> {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        'الخصم',
+                        S.discount,
                         style: AppTheme.smallText.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -202,7 +202,7 @@ class _OffersScreenState extends State<OffersScreen> {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        'الحالة',
+                        S.status,
                         style: AppTheme.smallText.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -211,7 +211,7 @@ class _OffersScreenState extends State<OffersScreen> {
                     Expanded(
                       flex: 1,
                       child: Text(
-                        'الإجراءات',
+                        S.actions,
                         style: AppTheme.smallText.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -351,7 +351,7 @@ class _OffersScreenState extends State<OffersScreen> {
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
-                                      o.isActive ? 'نشط' : 'غير نشط',
+                                      o.isActive ? S.active : S.inactive,
                                       style: AppTheme.smallText.copyWith(
                                         color: o.isActive
                                             ? AppTheme.success
@@ -425,7 +425,7 @@ class _OffersScreenState extends State<OffersScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setState) => AlertDialog(
           title: Text(
-            offer == null ? 'إضافة قسم عرض' : 'تعديل قسم العرض',
+            offer == null ? S.addOfferSection : S.editOfferSection,
             style: AppTheme.sectionTitle,
           ),
           content: SizedBox(
@@ -440,8 +440,8 @@ class _OffersScreenState extends State<OffersScreen> {
                       Expanded(
                         child: TextField(
                           controller: titleC,
-                          decoration: const InputDecoration(
-                            labelText: 'معرف أو عنوان داخلي (Title)',
+                          decoration: InputDecoration(
+                            labelText: S.offerTitle,
                           ),
                         ),
                       ),
@@ -449,8 +449,8 @@ class _OffersScreenState extends State<OffersScreen> {
                       Expanded(
                         child: TextField(
                           controller: discountC,
-                          decoration: const InputDecoration(
-                            labelText: 'نسبة الخصم (%)',
+                          decoration: InputDecoration(
+                            labelText: S.discountPercent,
                           ),
                           keyboardType: TextInputType.number,
                         ),
@@ -460,7 +460,7 @@ class _OffersScreenState extends State<OffersScreen> {
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: descC,
-                    decoration: const InputDecoration(labelText: 'الوصف'),
+                    decoration: InputDecoration(labelText: S.description),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   Row(
@@ -468,8 +468,8 @@ class _OffersScreenState extends State<OffersScreen> {
                       Expanded(
                         child: TextField(
                           controller: nameline1C,
-                          decoration: const InputDecoration(
-                            labelText: 'السطر الأول (EN)',
+                          decoration: InputDecoration(
+                            labelText: S.lineOneEn,
                           ),
                         ),
                       ),
@@ -477,8 +477,8 @@ class _OffersScreenState extends State<OffersScreen> {
                       Expanded(
                         child: TextField(
                           controller: nameline1ArC,
-                          decoration: const InputDecoration(
-                            labelText: 'السطر الأول (AR)',
+                          decoration: InputDecoration(
+                            labelText: S.lineOneAr,
                           ),
                         ),
                       ),
@@ -490,8 +490,8 @@ class _OffersScreenState extends State<OffersScreen> {
                       Expanded(
                         child: TextField(
                           controller: nameline2C,
-                          decoration: const InputDecoration(
-                            labelText: 'السطر الثاني (EN)',
+                          decoration: InputDecoration(
+                            labelText: S.lineTwoEn,
                           ),
                         ),
                       ),
@@ -499,8 +499,8 @@ class _OffersScreenState extends State<OffersScreen> {
                       Expanded(
                         child: TextField(
                           controller: nameline2ArC,
-                          decoration: const InputDecoration(
-                            labelText: 'السطر الثاني (AR)',
+                          decoration: InputDecoration(
+                            labelText: S.lineTwoAr,
                           ),
                         ),
                       ),
@@ -512,8 +512,8 @@ class _OffersScreenState extends State<OffersScreen> {
                       Expanded(
                         child: TextField(
                           controller: timeC,
-                          decoration: const InputDecoration(
-                            labelText: 'الوقت (EN)',
+                          decoration: InputDecoration(
+                            labelText: S.timeEn,
                           ),
                         ),
                       ),
@@ -521,8 +521,8 @@ class _OffersScreenState extends State<OffersScreen> {
                       Expanded(
                         child: TextField(
                           controller: timeArC,
-                          decoration: const InputDecoration(
-                            labelText: 'الوقت (AR)',
+                          decoration: InputDecoration(
+                            labelText: S.timeAr,
                           ),
                         ),
                       ),
@@ -530,7 +530,7 @@ class _OffersScreenState extends State<OffersScreen> {
                   ),
                   const SizedBox(height: AppTheme.spaceM),
                   ImageUploadField(
-                    label: 'صورة خلفية العرض',
+                    label: S.offerBgImage,
                     currentImageUrl: imgC.text,
                     folderName: 'offers',
                     onImageUploaded: (url) {
@@ -542,7 +542,7 @@ class _OffersScreenState extends State<OffersScreen> {
                     children: [
                       Expanded(
                         child: SwitchListTile(
-                          title: Text('القسم نشط', style: AppTheme.bodyText),
+                          title: Text(S.sectionActive, style: AppTheme.bodyText),
                           value: isActive,
                           onChanged: (v) => setState(() => isActive = v),
                           activeThumbColor: AppTheme.primary,
@@ -550,7 +550,7 @@ class _OffersScreenState extends State<OffersScreen> {
                       ),
                       Expanded(
                         child: SwitchListTile(
-                          title: Text('مؤقت التقويم', style: AppTheme.bodyText),
+                          title: Text(S.calendarTimer, style: AppTheme.bodyText),
                           value: isTimeCalendar,
                           onChanged: (v) => setState(() => isTimeCalendar = v),
                           activeThumbColor: AppTheme.primary,
@@ -651,7 +651,7 @@ class _OffersScreenState extends State<OffersScreen> {
           style: AppTheme.sectionTitle.copyWith(color: AppTheme.error),
         ),
         content: Text(
-          'هل أنت متأكد من حذف العرض ${o.title}؟',
+          S.deleteOfferMsg(o.title),
           style: AppTheme.bodyText,
         ),
         actions: [

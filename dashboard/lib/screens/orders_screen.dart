@@ -5,6 +5,7 @@ import '../theme/app_theme.dart';
 import '../widgets/admin_layout.dart';
 import '../widgets/order_detail_drawer.dart';
 import '../providers/settings_provider.dart';
+import '../l10n/app_strings.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -77,10 +78,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('إدارة الطلبات', style: AppTheme.pageTitle),
+              Text(S.manageOrders, style: AppTheme.pageTitle),
               const SizedBox(height: 4),
               Text(
-                'متابعة وتحديث حالات الطلبات',
+                S.manageOrdersSub,
                 style: AppTheme.bodyText.copyWith(
                   color: AppTheme.textSecondary,
                 ),
@@ -95,7 +96,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             onChanged: (v) => setState(() => _search = v),
             style: AppTheme.bodyText,
             decoration: InputDecoration(
-              hintText: 'بحث برقم الطلب...',
+              hintText: S.searchOrders,
               prefixIcon: Icon(
                 Icons.search,
                 size: 18,
@@ -133,7 +134,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   ),
                   const SizedBox(height: AppTheme.spaceM),
                   Text(
-                    'لا يوجد طلبات حالياً',
+                    S.noOrdersNow,
                     style: AppTheme.bodyText.copyWith(
                       color: AppTheme.textMuted,
                     ),
@@ -179,12 +180,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 ),
                 child: Row(
                   children: [
-                    _headerCell('رقم الطلب', flex: 2),
-                    _headerCell('العميل', flex: 2),
-                    _headerCell('الحالة', flex: 2),
-                    _headerCell('الإجمالي', flex: 2),
-                    _headerCell('التاريخ', flex: 3),
-                    _headerCell('الأصناف', flex: 1),
+                    _headerCell(S.orderId, flex: 2),
+                    _headerCell(S.customer, flex: 2),
+                    _headerCell(S.status, flex: 2),
+                    _headerCell(S.total, flex: 2),
+                    _headerCell(S.date, flex: 3),
+                    _headerCell(S.items, flex: 1),
                   ],
                 ),
               ),
@@ -298,7 +299,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       border: Border.all(color: sc.withValues(alpha: 0.25)),
                     ),
                     child: Text(
-                      statusLabelAr(order.status),
+                      S.statusLabel(order.status),
                       style: AppTheme.smallText.copyWith(
                         color: sc,
                         fontWeight: FontWeight.w600,
@@ -346,7 +347,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      '${order.items.length} صنف',
+                      S.itemsCount(order.items.length),
                       style: AppTheme.smallText.copyWith(fontSize: 11),
                       textAlign: TextAlign.center,
                     ),

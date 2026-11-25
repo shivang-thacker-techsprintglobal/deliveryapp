@@ -1,9 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/settings/settings_cubit.dart';
@@ -22,7 +19,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   UserModel? _userData;
   bool _isLoading = true;
   bool _isUploading = false;
-  final _picker = ImagePicker();
 
   @override
   void initState() {
@@ -44,28 +40,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _updateProfileImage() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery, 
-      imageQuality: 70,
-      maxWidth: 800,
-      maxHeight: 800,
+    // Free Firebase (Spark) does not include Storage without Blaze.
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Photo upload needs Firebase Storage (Blaze). Skipped on free plan.'),
+      ),
     );
-    if (image == null) return;
-
-    setState(() => _isUploading = true);
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      final ref = FirebaseStorage.instance.ref().child('users/${user!.uid}/profile.jpg');
-      await ref.putFile(File(image.path));
-      final url = await ref.getDownloadURL();
-
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({'image': url});
-      _loadUserData();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-    } finally {
-      setState(() => _isUploading = false);
-    }
   }
 
   void _editField(String field, String currentValue, bool isVerified) {

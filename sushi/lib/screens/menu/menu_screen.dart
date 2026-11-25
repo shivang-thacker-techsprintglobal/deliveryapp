@@ -39,6 +39,22 @@ class _MenuScreenState extends State<MenuScreen> {
             final items = state.items;
             final selectedIndex = state.selectedCategoryIndex;
 
+            // New Firebase projects start empty — don't crash on categories[0].
+            if (categories.isEmpty) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Text(
+                    'No menu categories yet.\nAdd categories and items from the dashboard.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                  ),
+                ),
+              );
+            }
+
+            final safeIndex = selectedIndex.clamp(0, categories.length - 1);
+
             return Stack(
               children: [
                 Column(
@@ -50,12 +66,12 @@ class _MenuScreenState extends State<MenuScreen> {
                         behavior: HitTestBehavior.opaque,
                         onHorizontalDragEnd: (details) {
                           if (details.primaryVelocity! > 500) {
-                            if (selectedIndex > 0) {
-                              context.read<MenuCubit>().selectCategory(selectedIndex - 1);
+                            if (safeIndex > 0) {
+                              context.read<MenuCubit>().selectCategory(safeIndex - 1);
                             }
                           } else if (details.primaryVelocity! < -500) {
-                            if (selectedIndex < categories.length - 1) {
-                              context.read<MenuCubit>().selectCategory(selectedIndex + 1);
+                            if (safeIndex < categories.length - 1) {
+                              context.read<MenuCubit>().selectCategory(safeIndex + 1);
                             }
                           }
                         },
@@ -94,8 +110,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                   duration: const Duration(milliseconds: 600),
                                   transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
                                   child: CachedNetworkImage(
-                                    key: ValueKey<int>(selectedIndex),
-                                    imageUrl: categories[selectedIndex].image ?? '',
+                                    key: ValueKey<int>(safeIndex),
+                                    imageUrl: categories[safeIndex].image ?? '',
                                     fit: BoxFit.fill,
                                     width: double.infinity,
                                     height: double.infinity,
@@ -145,7 +161,7 @@ class _MenuScreenState extends State<MenuScreen> {
                               left: 0,
                               right: 0,
                               child: Text(
-                                categories[selectedIndex].name ?? '',
+                                categories[safeIndex].name ?? '',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
                               ),
@@ -160,11 +176,11 @@ class _MenuScreenState extends State<MenuScreen> {
                                   categories.length,
                                   (index) => Container(
                                     margin: const EdgeInsets.symmetric(horizontal: 4),
-                                    width: index == selectedIndex ? 10 : 8,
+                                    width: index == safeIndex ? 10 : 8,
                                     height: 8,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: index == selectedIndex ? Colors.white : Colors.white38,
+                                      color: index == safeIndex ? Colors.white : Colors.white38,
                                     ),
                                   ),
                                 ),

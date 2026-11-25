@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/driver_model.dart';
 import '../services/firebase_service.dart';
 import '../theme/app_theme.dart';
+import '../l10n/app_strings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/app_image.dart';
 
@@ -58,7 +59,7 @@ class _DriverDetailDrawerState extends State<DriverDetailDrawer> {
                             color: AppTheme.textMuted,
                           ),
                           const SizedBox(height: 16),
-                          Text('الصورة غير متاحة', style: AppTheme.bodyText),
+                          Text(S.imageUnavailable, style: AppTheme.bodyText),
                         ],
                       ),
                     ),
@@ -155,12 +156,12 @@ class _DriverDetailDrawerState extends State<DriverDetailDrawer> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  driver.name.isNotEmpty ? driver.name : 'سائق بدون اسم',
+                  driver.name.isNotEmpty ? driver.name : S.unnamedDriver,
                   style: AppTheme.cardTitle,
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'المعرف: ${driver.id}',
+                  '${S.idLabel}: ${driver.id}',
                   style: AppTheme.smallText.copyWith(
                     color: AppTheme.textMuted,
                     fontSize: 11,
@@ -247,24 +248,24 @@ class _DriverDetailDrawerState extends State<DriverDetailDrawer> {
 
   Widget _sectionDriverInfo(DriverModel driver) {
     return _sectionCard(
-      'بيانات السائق (Driver Information)',
+      S.driverInformation,
       Icons.person_outline,
       [
-        _infoRow('الاسم (Name)', driver.name),
-        _infoRow('البريد (Email)', driver.email),
-        _infoRow('الهاتف (Phone)', driver.phone),
-        _infoRow('الدور (Role)', driver.role),
+        _infoRow(S.name, driver.name),
+        _infoRow(S.email, driver.email),
+        _infoRow(S.phone, driver.phone),
+        _infoRow(S.role, driver.role),
       ],
     );
   }
 
   Widget _sectionStatus(DriverModel driver) {
-    return _sectionCard('حالة السائق (Driver Status)', Icons.info_outline, [
+    return _sectionCard(S.driverStatusSection, Icons.info_outline, [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'حالة الاعتماد',
+            S.approvalStatus,
             style: AppTheme.smallText.copyWith(color: AppTheme.textMuted),
           ),
           Container(
@@ -294,7 +295,7 @@ class _DriverDetailDrawerState extends State<DriverDetailDrawer> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'حالة الاتصال',
+            S.connectionStatus,
             style: AppTheme.smallText.copyWith(color: AppTheme.textMuted),
           ),
           Container(
@@ -332,7 +333,7 @@ class _DriverDetailDrawerState extends State<DriverDetailDrawer> {
 
   Widget _sectionVehicle(DriverModel driver) {
     return _sectionCard(
-      'معلومات المركبة (Vehicle Information)',
+      S.vehicleInfo,
       Icons.directions_car_outlined,
       [
         if (driver.vehicleInfo != null && driver.vehicleInfo!.isNotEmpty)
@@ -351,16 +352,16 @@ class _DriverDetailDrawerState extends State<DriverDetailDrawer> {
 
   Widget _sectionImages(DriverModel driver, BuildContext context) {
     return _sectionCard(
-      'الصور والمستندات (Driver Images)',
+      S.driverImages,
       Icons.photo_library_outlined,
       [
-        _imageTile(context, 'الصورة الشخصية (Profile)', driver.profileImage),
+        _imageTile(context, S.profilePhoto, driver.profileImage),
         const SizedBox(height: 10),
-        _imageTile(context, 'رخصة القيادة (License)', driver.licenseImage),
+        _imageTile(context, S.licenseImage, driver.licenseImage),
         const SizedBox(height: 10),
-        _imageTile(context, 'البطاقة - وجه (ID Front)', driver.nationalIdFront),
+        _imageTile(context, S.idFront, driver.nationalIdFront),
         const SizedBox(height: 10),
-        _imageTile(context, 'البطاقة - ظهر (ID Back)', driver.nationalIdBack),
+        _imageTile(context, S.idBack, driver.nationalIdBack),
       ],
     );
   }
@@ -417,7 +418,7 @@ class _DriverDetailDrawerState extends State<DriverDetailDrawer> {
               Icon(Icons.visibility_outlined, size: 18, color: AppTheme.primary)
             else
               Text(
-                'غير متوفر',
+                S.notAvailable,
                 style: AppTheme.smallText.copyWith(
                   color: AppTheme.textMuted,
                   fontSize: 10,
@@ -433,7 +434,7 @@ class _DriverDetailDrawerState extends State<DriverDetailDrawer> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('نظام الاعتماد (Approval System)', style: AppTheme.sectionTitle),
+        Text(S.approvalSystem, style: AppTheme.sectionTitle),
         const SizedBox(height: 12),
         if (driver.isApproved)
           SizedBox(

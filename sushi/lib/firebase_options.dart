@@ -3,27 +3,15 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+
 /// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
-///
-///
-
 class DefaultFirebaseOptions {
-
   static FirebaseOptions get currentPlatform {
-
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'sushi app is android/ios only.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -31,13 +19,16 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+          'DefaultFirebaseOptions have not been configured for linux.',
         );
       default:
         throw UnsupportedError(
@@ -46,56 +37,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBZRfuhRFUIQhlJLi5k2eLdjCKTaMgGz1U',
-    appId: '1:81595894097:web:72df02ffa86227d0abab70',
-    messagingSenderId: '81595894097',
-    projectId: 'educate-e464b',
-    authDomain: 'educate-e464b.firebaseapp.com',
-    databaseURL: 'https://educate-e464b.firebaseio.com',
-    storageBucket: 'educate-e464b.appspot.com',
-    measurementId: 'G-L80E1T8MZP',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCIoH8LRp7G1q2OTeZmaN_qlbxbrxEvwNk',
-    appId: '1:81595894097:android:ea142c416078350eabab70',
-    messagingSenderId: '81595894097',
-    projectId: 'educate-e464b',
-    databaseURL: 'https://educate-e464b.firebaseio.com',
-    storageBucket: 'educate-e464b.appspot.com',
-  );
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA0HummdZrQjcIhp4g88jtm1jIGfCODx_s',
-    appId: '1:81595894097:ios:bdde8abe8fa8a7fdabab70',
-    messagingSenderId: '81595894097',
-    projectId: 'educate-e464b',
-    databaseURL: 'https://educate-e464b.firebaseio.com',
-    storageBucket: 'educate-e464b.appspot.com',
-    androidClientId: '81595894097-oc7on26uktq3v0k29uruftq5psmejmml.apps.googleusercontent.com',
-    iosClientId: '81595894097-10onhn9plsbsj0vpf2cj9thffr1gsesm.apps.googleusercontent.com',
-    iosBundleId: 'com.example.sushi',
-  );
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA0HummdZrQjcIhp4g88jtm1jIGfCODx_s',
-    appId: '1:81595894097:ios:bdde8abe8fa8a7fdabab70',
-    messagingSenderId: '81595894097',
-    projectId: 'educate-e464b',
-    databaseURL: 'https://educate-e464b.firebaseio.com',
-    storageBucket: 'educate-e464b.appspot.com',
-    androidClientId: '81595894097-oc7on26uktq3v0k29uruftq5psmejmml.apps.googleusercontent.com',
-    iosClientId: '81595894097-10onhn9plsbsj0vpf2cj9thffr1gsesm.apps.googleusercontent.com',
-    iosBundleId: 'com.example.sushi',
+    apiKey: 'AIzaSyAGooyvokZMZ8ZPOnErJnnbpvORmwaDASs',
+    appId: '1:499952759339:android:8221ed0dede60d5f7f306e',
+    messagingSenderId: '499952759339',
+    projectId: 'sushideliveryapp-dfc29',
+    storageBucket: 'sushideliveryapp-dfc29.firebasestorage.app',
   );
 
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBZRfuhRFUIQhlJLi5k2eLdjCKTaMgGz1U',
-    appId: '1:81595894097:web:a97a0a1019c57678abab70',
-    messagingSenderId: '81595894097',
-    projectId: 'educate-e464b',
-    authDomain: 'educate-e464b.firebaseapp.com',
-    databaseURL: 'https://educate-e464b.firebaseio.com',
-    storageBucket: 'educate-e464b.appspot.com',
-    measurementId: 'G-1E6P81KGF5',
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBURFDnIdCHTufE1RIhj1DcL8kBE-3SQDg',
+    appId: '1:499952759339:ios:38878d9e1c35e3b57f306e',
+    messagingSenderId: '499952759339',
+    projectId: 'sushideliveryapp-dfc29',
+    storageBucket: 'sushideliveryapp-dfc29.firebasestorage.app',
+    iosClientId: '499952759339-t70c602skco27h2r0nkeji13lq1g9sv0.apps.googleusercontent.com',
+    iosBundleId: 'com.example.sushi',
   );
 }

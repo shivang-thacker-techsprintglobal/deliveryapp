@@ -57,7 +57,17 @@ class CartScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: () => context.read<CartCubit>().calculateDelivery(),
+                        onPressed: () async {
+                          final error = await context.read<CartCubit>().calculateDelivery();
+                          if (!context.mounted) return;
+                          if (error != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Delivery fee updated')),
+                            );
+                          }
+                        },
                         icon: const Icon(Icons.location_on_outlined, size: 18),
                         label: const Text('CALCULATE DELIVERY'),
                         style: OutlinedButton.styleFrom(
@@ -81,17 +91,24 @@ class CartScreen extends StatelessWidget {
                           final user = FirebaseAuth.instance.currentUser;
                           if (user == null) {
                             _showLoginPrompt(context);
-                          } else {
-                            final orderId = await context.read<CartCubit>().placeOrder();
-                            if (orderId != null && context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Order placed successfully! 🚀')),
-                              );
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const MyOrdersScreen()),
-                              );
-                            }
+                            return;
+                          }
+
+                          final orderId = await context.read<CartCubit>().placeOrder(
+                            onError: (message) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+                              }
+                            },
+                          );
+                          if (orderId != null && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Order placed successfully! 🚀')),
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MyOrdersScreen()),
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(

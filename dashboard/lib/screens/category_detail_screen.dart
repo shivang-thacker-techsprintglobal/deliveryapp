@@ -519,7 +519,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   ImageUploadField(
-                    label: 'صورة الصنف (Meal Image)',
+                    label: S.mealImage,
                     currentImageUrl: imgC.text,
                     folderName: 'meals',
                     onImageUploaded: (url) {

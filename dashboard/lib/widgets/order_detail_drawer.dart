@@ -3,28 +3,10 @@ import 'package:flutter/material.dart';
 import '../models/order_model.dart';
 import '../services/firebase_service.dart';
 import '../theme/app_theme.dart';
+import '../l10n/app_strings.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-String statusLabelAr(String status) {
-  switch (status) {
-    case 'pending':
-      return 'قيد الانتظار';
-    case 'accepted':
-      return 'تم قبول الطلب';
-    case 'preparing':
-      return 'جاري التجهيز';
-    case 'readyForPickup':
-      return 'جاهز للاستلام';
-    case 'driverAssigned':
-      return 'تم تعيين سائق';
-    case 'completed':
-      return 'مكتمل';
-    case 'cancelledByRestaurant':
-      return 'أُلغي بواسطة المطعم';
-    default:
-      return status;
-  }
-}
+String statusLabelAr(String status) => S.statusLabel(status);
 
 Color statusColor(String status) {
   switch (status) {
@@ -202,7 +184,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'طلب #${order.id.length > 8 ? order.id.substring(0, 8) : order.id}',
+                  S.orderNum(order.id.length > 8 ? order.id.substring(0, 8) : order.id),
                   style: AppTheme.cardTitle,
                 ),
                 const SizedBox(height: 2),
@@ -305,22 +287,22 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
   }
 
   Widget _sectionOrderInfo(OrderModel order) {
-    return _sectionCard('معلومات الطلب', Icons.receipt_long_outlined, [
-      _infoRow('رقم الطلب', order.id),
+    return _sectionCard(S.orderInfo, Icons.receipt_long_outlined, [
+      _infoRow(S.orderId, order.id),
       _infoRow(
-        'الحالة',
+        S.status,
         statusLabelAr(order.status),
         valueColor: statusColor(order.status),
       ),
-      _infoRow('تاريخ الإنشاء', _formatDate(order.createdAt)),
-      _infoRow('آخر تحديث', _formatDate(order.updatedAt)),
-      if (order.payment.isNotEmpty) _infoRow('طريقة الدفع', order.payment),
+      _infoRow(S.createdAt, _formatDate(order.createdAt)),
+      _infoRow(S.lastUpdated, _formatDate(order.updatedAt)),
+      if (order.payment.isNotEmpty) _infoRow(S.paymentMethod, order.payment),
     ]);
   }
 
   Widget _sectionCustomer() {
     if (_loadingCustomer) {
-      return _sectionCard('معلومات العميل', Icons.person_outline, [
+      return _sectionCard(S.customerInfo, Icons.person_outline, [
         const Center(
           child: SizedBox(
             width: 20,
@@ -331,19 +313,19 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
       ]);
     }
     if (_customer == null) {
-      return _sectionCard('معلومات العميل', Icons.person_outline, [
+      return _sectionCard(S.customerInfo, Icons.person_outline, [
         Text(
-          'لا توجد بيانات عميل',
+          S.noCustomerData,
           style: AppTheme.smallText.copyWith(color: AppTheme.textMuted),
         ),
       ]);
     }
     final c = _customer!;
-    return _sectionCard('معلومات العميل', Icons.person_outline, [
-      if (c['name'] != null) _infoRow('الاسم', c['name'].toString()),
-      if (c['email'] != null) _infoRow('البريد', c['email'].toString()),
-      if (c['phone'] != null) _infoRow('الهاتف', c['phone'].toString()),
-      if (c['address'] != null) _infoRow('العنوان', c['address'].toString()),
+    return _sectionCard(S.customerInfo, Icons.person_outline, [
+      if (c['name'] != null) _infoRow(S.name, c['name'].toString()),
+      if (c['email'] != null) _infoRow(S.email, c['email'].toString()),
+      if (c['phone'] != null) _infoRow(S.phone, c['phone'].toString()),
+      if (c['address'] != null) _infoRow(S.address, c['address'].toString()),
     ]);
   }
 
@@ -353,7 +335,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
         order.driverId!.isNotEmpty &&
         order.driverId != 'null';
     if (!hasDriver) {
-      return _sectionCard('معلومات السائق', Icons.delivery_dining_outlined, [
+      return _sectionCard(S.driverInfo, Icons.delivery_dining_outlined, [
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -366,7 +348,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
               Icon(Icons.info_outline, color: AppTheme.warning, size: 18),
               const SizedBox(width: 8),
               Text(
-                'لم يتم تعيين سائق بعد',
+                S.noDriverAssigned,
                 style: AppTheme.bodyText.copyWith(
                   color: AppTheme.warning,
                   fontSize: 13,
@@ -378,7 +360,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
       ]);
     }
     if (_loadingDriver) {
-      return _sectionCard('معلومات السائق', Icons.delivery_dining_outlined, [
+      return _sectionCard(S.driverInfo, Icons.delivery_dining_outlined, [
         const Center(
           child: SizedBox(
             width: 20,
@@ -389,18 +371,18 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
       ]);
     }
     final d = _driver;
-    return _sectionCard('معلومات السائق', Icons.delivery_dining_outlined, [
-      _infoRow('معرف السائق', order.driverId!),
+    return _sectionCard(S.driverInfo, Icons.delivery_dining_outlined, [
+      _infoRow(S.driverIdLabel, order.driverId!),
       if (d != null) ...[
-        if (d['name'] != null) _infoRow('الاسم', d['name'].toString()),
-        if (d['phone'] != null) _infoRow('الهاتف', d['phone'].toString()),
+        if (d['name'] != null) _infoRow(S.name, d['name'].toString()),
+        if (d['phone'] != null) _infoRow(S.phone, d['phone'].toString()),
       ],
     ]);
   }
 
   Widget _sectionDelivery(OrderModel order) {
     String locStr(Map<String, dynamic>? loc) {
-      if (loc == null) return 'غير متاح';
+      if (loc == null) return S.notAvailable;
       final lat = loc['latitude'] ?? loc['lat'];
       final lng = loc['longitude'] ?? loc['lng'];
       if (lat != null && lng != null) return '$lat, $lng';
@@ -408,15 +390,15 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
     }
 
     final hasDriverLoc = order.driverLocation != null;
-    return _sectionCard('معلومات التوصيل', Icons.location_on_outlined, [
-      _infoRow('موقع التوصيل', locStr(order.deliveryLocation)),
+    return _sectionCard(S.deliveryInfo, Icons.location_on_outlined, [
+      _infoRow(S.deliveryLocation, locStr(order.deliveryLocation)),
       if (hasDriverLoc)
-        _infoRow('موقع السائق', locStr(order.driverLocation))
+        _infoRow(S.driverLocation, locStr(order.driverLocation))
       else
         Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
-            'لا يوجد موقع سائق متاح',
+            S.noDriverLocation,
             style: AppTheme.smallText.copyWith(color: AppTheme.textMuted),
           ),
         ),
@@ -425,15 +407,15 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
 
   Widget _sectionItems(OrderModel order) {
     if (order.items.isEmpty) {
-      return _sectionCard('الأصناف المطلوبة', Icons.fastfood_outlined, [
+      return _sectionCard(S.orderedItems, Icons.fastfood_outlined, [
         Text(
-          'لا توجد أصناف',
+          S.noItems,
           style: AppTheme.smallText.copyWith(color: AppTheme.textMuted),
         ),
       ]);
     }
     return _sectionCard(
-      'الأصناف المطلوبة (${order.items.length})',
+      '${S.orderedItems} (${order.items.length})',
       Icons.fastfood_outlined,
       order.items.map((item) => _itemTile(item)).toList(),
     );
@@ -561,17 +543,17 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
   }
 
   Widget _sectionPricing(OrderModel order) {
-    return _sectionCard('ملخص الأسعار', Icons.payments_outlined, [
-      _priceRow('المجموع الفرعي', order.subtotal),
+    return _sectionCard(S.priceSummary, Icons.payments_outlined, [
+      _priceRow(S.subtotal, order.subtotal),
       if (order.discount > 0)
-        _priceRow('الخصم', -order.discount, isDiscount: true),
-      _priceRow('رسوم التوصيل', order.deliveryFee),
+        _priceRow(S.discount, -order.discount, isDiscount: true),
+      _priceRow(S.deliveryFee, order.deliveryFee),
       Divider(color: AppTheme.borderColor, height: 20),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'الإجمالي',
+            S.total,
             style: AppTheme.bodyText.copyWith(fontWeight: FontWeight.w700),
           ),
           Text(
@@ -629,7 +611,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
               Column(
                 children: [
                   Text(
-                    'الحالة الحالية',
+                    S.currentStatus,
                     style: AppTheme.smallText.copyWith(
                       fontSize: 11,
                       color: sc.withValues(alpha: 0.7),
@@ -704,7 +686,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'في انتظار تعيين سائق من التطبيق',
+                  S.waitingDriverAssign,
                   style: AppTheme.smallText.copyWith(fontSize: 12),
                 ),
               ],
@@ -719,7 +701,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
               onPressed: _actionLoading ? null : () => _confirmCancel(order),
               icon: const Icon(Icons.cancel_outlined, size: 18),
               label: Text(
-                'إلغاء الطلب',
+                S.cancelOrder,
                 style: GoogleFonts.cairo(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -743,21 +725,21 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
     switch (status) {
       case 'pending':
         return {
-          'label': 'قبول الطلب',
+          'label': S.acceptOrder,
           'icon': Icons.check_circle_outline,
           'color': const Color(0xFF3B82F6),
           'action': () => _fs.acceptOrder(widget.orderId),
         };
       case 'accepted':
         return {
-          'label': 'بدء التجهيز',
+          'label': S.startPreparing,
           'icon': Icons.restaurant_rounded,
           'color': const Color(0xFFF97316),
           'action': () => _fs.startPreparing(widget.orderId),
         };
       case 'preparing':
         return {
-          'label': 'جاهز للاستلام',
+          'label': S.readyForPickupAction,
           'icon': Icons.inventory_2_outlined,
           'color': const Color(0xFF8B5CF6),
           'action': () => _fs.markReadyForPickup(widget.orderId),
@@ -781,7 +763,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
             Icon(Icons.warning_amber_rounded, color: AppTheme.error),
             const SizedBox(width: 8),
             Text(
-              'تأكيد الإلغاء',
+              S.confirmCancel,
               style: AppTheme.sectionTitle.copyWith(
                 color: AppTheme.error,
                 fontSize: 18,
@@ -790,14 +772,14 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
           ],
         ),
         content: Text(
-          'هل أنت متأكد من إلغاء الطلب #${order.id.length > 8 ? order.id.substring(0, 8) : order.id}؟',
+          S.cancelOrderMsg(order.id.length > 8 ? order.id.substring(0, 8) : order.id),
           style: AppTheme.bodyText,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(
-              'تراجع',
+              S.undo,
               style: AppTheme.bodyText.copyWith(color: AppTheme.textSecondary),
             ),
           ),
@@ -812,7 +794,7 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
               _doAction(() => _fs.cancelOrderByRestaurant(widget.orderId));
             },
             child: Text(
-              'إلغاء الطلب',
+              S.cancelOrder,
               style: GoogleFonts.cairo(fontWeight: FontWeight.w600),
             ),
           ),

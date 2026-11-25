@@ -93,31 +93,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         
-                        const SizedBox(height: 15),
-                        
-                        // OR Divider
-                        Row(
-                          children: [
-                            const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: Text('OR', style: TextStyle(color: Colors.orange.shade700, fontSize: 12, fontWeight: FontWeight.bold)),
-                            ),
-                            const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 15),
-                        
-                        // Social Login Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _socialButton('assets/images/google.png', () => context.read<AuthCubit>().loginWithGoogle()),
-                            _socialButton('assets/images/facebook.png', () {}),
-                          ],
-                        ),
-                        
+                        // Google / Facebook register disabled for now
+                        // const SizedBox(height: 15),
+                        // Row(
+                        //   children: [
+                        //     const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
+                        //     Padding(
+                        //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                        //       child: Text('OR', style: TextStyle(color: Colors.orange.shade700, fontSize: 12, fontWeight: FontWeight.bold)),
+                        //     ),
+                        //     const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
+                        //   ],
+                        // ),
+                        // const SizedBox(height: 15),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     _socialButton('assets/images/google.png', () => context.read<AuthCubit>().loginWithGoogle()),
+                        //     _socialButton('assets/images/facebook.png', () {}),
+                        //   ],
+                        // ),
+
                         const SizedBox(height: 30),
                         
                         // Bottom Link
@@ -177,11 +173,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _socialButton(String assetPath, VoidCallback? onTap) {
-    return InkResponse(
-      onTap: onTap,
-      radius: 35,
-      child: Image.asset(assetPath, height: 65, fit: BoxFit.contain),
-    );
-  }
+  // Widget _socialButton(String assetPath, VoidCallback? onTap) {
+  //   return InkResponse(
+  //     onTap: onTap,
+  //     radius: 35,
+  //     child: Image.asset(assetPath, height: 65, fit: BoxFit.contain),
+  //   );
+  // }
 }

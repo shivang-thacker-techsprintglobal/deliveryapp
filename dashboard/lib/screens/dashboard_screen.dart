@@ -102,17 +102,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _loadData();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  S.welcomeMsg.contains('مرحبا')
-                      ? 'جاري التحديث...'
-                      : 'Refreshing...',
-                ),
+                content: Text(S.refreshing),
                 duration: const Duration(seconds: 1),
               ),
             );
           },
           icon: const Icon(Icons.refresh, size: 16),
-          label: const Text('Refresh'),
+          label: Text(S.refresh),
         ),
       ],
     );
@@ -255,19 +251,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               final day = DateTime.now().subtract(
                                 Duration(days: 6 - idx),
                               );
-                              final days = [
-                                'إثنين',
-                                'ثلاثاء',
-                                'أربعاء',
-                                'خميس',
-                                'جمعة',
-                                'سبت',
-                                'أحد',
-                              ];
                               return Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
-                                  days[day.weekday - 1],
+                                  S.weekDaysMonFirst[day.weekday - 1],
                                   style: AppTheme.smallText,
                                 ),
                               );
@@ -511,7 +498,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Latest Users', style: AppTheme.sectionTitle),
+          Text(S.latestUsers, style: AppTheme.sectionTitle),
           const SizedBox(height: AppTheme.spaceM),
           FutureBuilder<List<UserModel>>(
             future: _recentUsers,

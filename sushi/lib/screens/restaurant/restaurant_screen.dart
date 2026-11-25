@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../widgets/app_colors.dart';
 import '../../models/restaurant_model.dart';
 import '../../models/branch_model.dart';
+import '../../services/restaurant_service.dart';
 
 class RestaurantScreen extends StatefulWidget {
   final bool isShell;
@@ -59,16 +60,27 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
-      _userPosition = await Geolocator.getCurrentPosition().timeout(const Duration(seconds: 5), onTimeout: () => Position(longitude: 31.2357, latitude: 30.0444, timestamp: DateTime.now(), accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0, altitudeAccuracy: 0, headingAccuracy: 0));
-
-      final doc = await FirebaseFirestore.instance.collection('restaurants').doc('sushir12').get();
-      if (doc.exists && mounted) {
-        setState(() {
-          _restaurant = RestaurantModel.fromJson(doc.data()!);
-          _setMarkers();
-          _isLoading = false;
-        });
+      try {
+        _userPosition = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 12),
+          ),
+        );
+      } catch (_) {
+        // No fake city fallback — keep null if GPS is unavailable.
+        _userPosition = await Geolocator.getLastKnownPosition();
       }
+
+      final restaurant = await RestaurantService.fetchPrimary();
+
+      if (!mounted) return;
+
+      setState(() {
+        _restaurant = restaurant;
+        if (_restaurant != null) _setMarkers();
+        _isLoading = false;
+      });
     } catch (e) {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -145,14 +157,51 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       _setMarkers();
     }
 
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: CircularProgressIndicator(color: AppColors.lightOrange)),
+      );
+    }
+
+    if (_restaurant == null) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text(
+              'No restaurant found yet.\nAdd one in the dashboard under Restaurants, then add a branch.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.black54),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.lightOrange))
-          : Stack(
+      body: Stack(
               children: [
                 GoogleMap(
-                  initialCameraPosition: const CameraPosition(target: LatLng(30.0444, 31.2357), zoom: 11),
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                      _userPosition?.latitude ??
+                          _restaurant?.branches
+                              ?.where((b) => b.location != null)
+                              .map((b) => b.location!.latitude)
+                              .firstOrNull ??
+                          0,
+                      _userPosition?.longitude ??
+                          _restaurant?.branches
+                              ?.where((b) => b.location != null)
+                              .map((b) => b.location!.longitude)
+                              .firstOrNull ??
+                          0,
+                    ),
+                    zoom: 11,
+                  ),
                   markers: _markers,
                   onMapCreated: (c) => _mapController = c,
                   myLocationEnabled: true,

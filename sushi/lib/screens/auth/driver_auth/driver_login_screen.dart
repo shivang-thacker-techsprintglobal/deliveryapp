@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../widgets/app_colors.dart';
 import '../../../blocs/auth/auth_cubit.dart';
 import '../../../blocs/auth/auth_state.dart';
-import '../../../services/biometric_service.dart';
+// import '../../../services/biometric_service.dart'; // fingerprint disabled
 import '../../home/driver_home_screen.dart';
 import 'driver_register_screen.dart';
-import '../../home/home_screen.dart'; // Assume driver home will be handled
 
 class DriverLoginScreen extends StatefulWidget {
   const DriverLoginScreen({super.key});
@@ -18,15 +17,14 @@ class DriverLoginScreen extends StatefulWidget {
 class _DriverLoginScreenState extends State<DriverLoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final BiometricService _biometricService = BiometricService();
+  // final BiometricService _biometricService = BiometricService();
 
-  void _handleBiometric() async {
-    bool authenticated = await _biometricService.authenticate();
-    if (authenticated && mounted) {
-      // In a real app, you'd verify the UID with stored credentials
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Biometric Login Success')));
-    }
-  }
+  // void _handleBiometric() async {
+  //   bool authenticated = await _biometricService.authenticate();
+  //   if (authenticated && mounted) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Biometric Login Success')));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +60,12 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                 onPressed: () => context.read<AuthCubit>().login(_emailController.text, _passwordController.text),
                 child: const Text('LOGIN'),
               ),
-              const SizedBox(height: 20),
-              IconButton(
-                icon: const Icon(Icons.fingerprint, size: 50, color: AppColors.lightOrange),
-                onPressed: _handleBiometric,
-              ),
+              // Fingerprint login disabled for now
+              // const SizedBox(height: 20),
+              // IconButton(
+              //   icon: const Icon(Icons.fingerprint, size: 50, color: AppColors.lightOrange),
+              //   onPressed: _handleBiometric,
+              // ),
               TextButton(
                 onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DriverRegisterScreen())),
                 child: const Text('New Driver? Register here'),

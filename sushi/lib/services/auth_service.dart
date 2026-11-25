@@ -1,24 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart'; // Google login disabled
 import 'package:sushi/models/user_model.dart';
 
 class AuthService {
   // Use getters to avoid accessing .instance before Firebase.initializeApp()
   FirebaseAuth get _auth => FirebaseAuth.instance;
   FirebaseFirestore get _firestore => FirebaseFirestore.instance;
-  
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-  bool _isGoogleInitialized = false;
+
+  // Google login disabled for now
+  // final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  // bool _isGoogleInitialized = false;
 
   User? get currentUser => _auth.currentUser;
 
-  Future<void> _ensureGoogleInitialized() async {
-    if (!_isGoogleInitialized) {
-      await _googleSignIn.initialize();
-      _isGoogleInitialized = true;
-    }
-  }
+  // Future<void> _ensureGoogleInitialized() async {
+  //   if (!_isGoogleInitialized) {
+  //     await _googleSignIn.initialize();
+  //     _isGoogleInitialized = true;
+  //   }
+  // }
 
   Future<UserCredential?> signInWithEmail(String email, String password) async {
     try {
@@ -56,41 +57,43 @@ class AuthService {
     }
   }
 
-  Future<UserCredential?> signInWithGoogle() async {
-    try {
-      await _ensureGoogleInitialized();
-      final googleUser = await _googleSignIn.authenticate();
-      final googleAuth = googleUser.authentication;
-      final clientAuth = await googleUser.authorizationClient.authorizationForScopes(['email', 'profile', 'openid']);
-      final credential = GoogleAuthProvider.credential(
-        accessToken: clientAuth?.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
-      await _updateUserDataInFirestore(userCredential.user);
-      return userCredential;
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // Google login disabled for now
+  // Future<UserCredential?> signInWithGoogle() async {
+  //   try {
+  //     await _ensureGoogleInitialized();
+  //     final googleUser = await _googleSignIn.authenticate();
+  //     final googleAuth = googleUser.authentication;
+  //     final clientAuth = await googleUser.authorizationClient.authorizationForScopes(['email', 'profile', 'openid']);
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: clientAuth?.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+  //     UserCredential userCredential = await _auth.signInWithCredential(credential);
+  //     await _updateUserDataInFirestore(userCredential.user);
+  //     return userCredential;
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
-  Future<UserCredential?> signInWithFacebook() async {
-    return null;
-  }
+  // Facebook login disabled for now
+  // Future<UserCredential?> signInWithFacebook() async {
+  //   return null;
+  // }
 
-  Future<void> _updateUserDataInFirestore(User? user) async {
-    if (user == null) return;
-    DocumentSnapshot doc = await _firestore.collection('users').doc(user.uid).get();
-    if (!doc.exists) {
-      UserModel newUser = UserModel(
-        name: user.displayName,
-        email: user.email,
-        phone: user.phoneNumber,
-        image: user.photoURL,
-      );
-      await _firestore.collection('users').doc(user.uid).set(newUser.toJson());
-    }
-  }
+  // Future<void> _updateUserDataInFirestore(User? user) async {
+  //   if (user == null) return;
+  //   DocumentSnapshot doc = await _firestore.collection('users').doc(user.uid).get();
+  //   if (!doc.exists) {
+  //     UserModel newUser = UserModel(
+  //       name: user.displayName,
+  //       email: user.email,
+  //       phone: user.phoneNumber,
+  //       image: user.photoURL,
+  //     );
+  //     await _firestore.collection('users').doc(user.uid).set(newUser.toJson());
+  //   }
+  // }
 
   Future<String?> getUserRole(String uid) async {
     final driverDoc = await _firestore.collection('DeliveryDrivers').doc(uid).get();
@@ -104,6 +107,6 @@ class AuthService {
 
   Future<void> signOut() async {
     await _auth.signOut();
-    await _googleSignIn.signOut();
+    // await _googleSignIn.signOut(); // Google login disabled
   }
 }

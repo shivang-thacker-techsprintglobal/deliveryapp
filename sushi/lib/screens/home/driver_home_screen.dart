@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +11,7 @@ import '../../widgets/app_colors.dart';
 import '../../models/order_model.dart';
 import '../../models/user_model.dart';
 import '../../models/restaurant_model.dart';
+import '../../services/restaurant_service.dart';
 import '../../screens/auth/welcome_screen.dart';
 
 import '../driver_menu/driver_profile_screen.dart';
@@ -35,6 +35,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   BitmapDescriptor? _driverIcon;
   BitmapDescriptor? _shopIcon;
   BitmapDescriptor? _customerIcon;
+
+  /// First branch that has a map location (safe when branches is empty).
+  GeoPoint? get _firstBranchLocation {
+    final branches = _restaurant?.branches;
+    if (branches == null || branches.isEmpty) return null;
+    for (final branch in branches) {
+      if (branch.location != null) return branch.location;
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -89,9 +99,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   }
 
   void _loadRestaurantInfo() async {
-    final doc = await FirebaseFirestore.instance.collection('restaurants').doc('sushir12').get();
-    if (doc.exists) {
-      setState(() => _restaurant = RestaurantModel.fromJson(doc.data()!));
+    final restaurant = await RestaurantService.fetchPrimary();
+    if (restaurant != null && mounted) {
+      setState(() => _restaurant = restaurant);
     }
   }
 
@@ -115,8 +125,12 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   void _startLocationUpdates() {
     _locationSubscription?.cancel();
+    // Use cross-platform settings so iOS simulator/device also auto-sync.
     _locationSubscription = Geolocator.getPositionStream(
-      locationSettings: AndroidSettings(accuracy: LocationAccuracy.high, distanceFilter: 10, intervalDuration: const Duration(seconds: 10)),
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      ),
     ).listen((Position position) {
       if (mounted) setState(() => _currentPosition = position);
       _syncLocationToFirestore(position);
@@ -187,7 +201,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               onPressed: () async {
                 Position pos = await Geolocator.getCurrentPosition();
                 await _syncLocationToFirestore(pos);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Location Manually Synced! 🛰️')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Location updated for this order')),
+                );
               },
               backgroundColor: Colors.white,
               child: const Icon(Icons.my_location, color: Color(0xFFF4A73D)),
@@ -256,14 +272,21 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           flex: 2,
           child: GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: LatLng(order.deliveryLocation?.latitude ?? 30.0, order.deliveryLocation?.longitude ?? 31.0),
+              target: LatLng(
+                order.deliveryLocation?.latitude ??
+                    _currentPosition?.latitude ??
+                    0,
+                order.deliveryLocation?.longitude ??
+                    _currentPosition?.longitude ??
+                    0,
+              ),
               zoom: 13,
             ),
             markers: {
               if (_currentPosition != null)
                 Marker(markerId: const MarkerId('driver'), position: LatLng(_currentPosition!.latitude, _currentPosition!.longitude), icon: _driverIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange), infoWindow: const InfoWindow(title: 'You')),
-              if (_restaurant?.branches != null)
-                Marker(markerId: const MarkerId('restaurant'), position: LatLng(_restaurant!.branches![0].location!.latitude, _restaurant!.branches![0].location!.longitude), icon: _shopIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed), infoWindow: const InfoWindow(title: 'Shop')),
+              if (_firstBranchLocation != null)
+                Marker(markerId: const MarkerId('restaurant'), position: LatLng(_firstBranchLocation!.latitude, _firstBranchLocation!.longitude), icon: _shopIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed), infoWindow: const InfoWindow(title: 'Shop')),
               if (order.deliveryLocation != null)
                 Marker(markerId: const MarkerId('customer'), position: LatLng(order.deliveryLocation!.latitude, order.deliveryLocation!.longitude), icon: _customerIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure), infoWindow: const InfoWindow(title: 'Customer')),
             },

@@ -178,12 +178,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   ),
                 ),
                 columns: [
-                  const DataColumn(label: Text('Category')),
-                  const DataColumn(label: Text('Description')),
+                  DataColumn(label: Text(S.categoryCol)),
+                  DataColumn(label: Text(S.description)),
                   DataColumn(label: Text(S.mealsCount)),
                   DataColumn(label: Text(S.completedOrders)),
                   DataColumn(label: Text(S.revenue)),
-                  const DataColumn(label: Text('Actions')),
+                  DataColumn(label: Text(S.actions)),
                 ],
                 rows: cats.map((c) => _buildDataRow(c)).toList(),
               ),
@@ -255,7 +255,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                c.description.isNotEmpty ? c.description : 'No description',
+                c.description.isNotEmpty ? c.description : S.noDescription,
                 style: AppTheme.smallText,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -349,30 +349,30 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 children: [
                   TextField(
                     controller: nameC,
-                    decoration: const InputDecoration(
-                      labelText: 'اسم القسم (EN)',
+                    decoration: InputDecoration(
+                      labelText: S.categoryNameEn,
                     ),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: nameArC,
-                    decoration: const InputDecoration(
-                      labelText: 'اسم القسم (AR)',
+                    decoration: InputDecoration(
+                      labelText: S.categoryNameAr,
                     ),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: descC,
-                    decoration: const InputDecoration(labelText: 'الوصف (EN)'),
+                    decoration: InputDecoration(labelText: S.descriptionEn),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: descArC,
-                    decoration: const InputDecoration(labelText: 'الوصف (AR)'),
+                    decoration: InputDecoration(labelText: S.descriptionAr),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   ImageUploadField(
-                    label: 'صورة القسم (Category Image)',
+                    label: S.categoryImage,
                     currentImageUrl: imgC.text,
                     folderName: 'categories',
                     onImageUploaded: (url) {

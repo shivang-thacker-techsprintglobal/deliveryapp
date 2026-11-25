@@ -16,13 +16,17 @@ class OrdersCubit extends Cubit<OrdersState> {
     if (_uid == null) return;
     emit(OrdersLoading());
 
+    // Filter by userId only (no orderBy) so we don't need a composite index.
+    // Sort newest-first in the app instead.
     _firestore
         .collection('orders')
         .where('userId', isEqualTo: _uid)
-        .orderBy('createdAt', descending: true)
         .snapshots()
         .listen((snapshot) {
-      final allOrders = snapshot.docs.map((doc) => OrderModel.fromJson(doc.data(), doc.id)).toList();
+      final allOrders = snapshot.docs
+          .map((doc) => OrderModel.fromJson(doc.data(), doc.id))
+          .toList()
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       final active = allOrders.where((o) => 
         o.status != OrderStatus.delivered && 

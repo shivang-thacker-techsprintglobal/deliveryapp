@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/item_model.dart';
 import '../../models/order_model.dart';
 import '../../models/restaurant_model.dart';
+import '../../services/restaurant_service.dart';
 import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
@@ -107,50 +108,109 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  Future<void> calculateDelivery() async {
+  Future<String?> _ensureLocationPermission() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      return 'Please turn on Location Services and try again.';
+    }
+
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied) {
+      return 'Location permission is required to continue.';
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+      return 'Location permission is permanently denied. Enable it in Settings.';
+    }
+
+    return null;
+  }
+
+  /// Real GPS only — no hardcoded city fallback.
+  Future<Position> _getPosition() async {
     try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        await Geolocator.openLocationSettings();
-        return;
-      }
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 15),
+        ),
+      );
+    } catch (e) {
+      debugPrint('getCurrentPosition failed, trying last known: $e');
+      final last = await Geolocator.getLastKnownPosition();
+      if (last != null) return last;
+      throw Exception(
+        'Could not get your location. On the simulator use Features → Location → Custom Location (or a real device).',
+      );
+    }
+  }
 
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) return;
-      }
+  /// Returns null on success, or an error message on failure.
+  Future<String?> calculateDelivery() async {
+    try {
+      final permissionError = await _ensureLocationPermission();
+      if (permissionError != null) return permissionError;
 
-      Position position = await Geolocator.getCurrentPosition();
-      final doc = await _firestore.collection('restaurants').doc('sushir12').get();
-      if (!doc.exists) return;
-      final restaurant = RestaurantModel.fromJson(doc.data()!);
-      if (restaurant.branches == null || restaurant.branches!.isEmpty) return;
+      final position = await _getPosition();
+      debugPrint('Delivery calc position: ${position.latitude}, ${position.longitude}');
+
+      final restaurant = await RestaurantService.fetchPrimary();
+      if (restaurant == null) {
+        return 'No restaurant found. Add one in the dashboard first.';
+      }
+      if (restaurant.branches == null || restaurant.branches!.isEmpty) {
+        return 'No restaurant branches found.';
+      }
 
       double minDistance = double.infinity;
       for (var branch in restaurant.branches!) {
         if (branch.location != null) {
-          double distance = Geolocator.distanceBetween(
+          final distance = Geolocator.distanceBetween(
             position.latitude, position.longitude,
             branch.location!.latitude, branch.location!.longitude,
           );
           if (distance < minDistance) minDistance = distance;
         }
       }
-      double fee = 15.0 + (4.0 * (minDistance / 1000.0));
+
+      if (minDistance == double.infinity) {
+        return 'Could not find a nearby branch location.';
+      }
+
+      final fee = 15.0 + (4.0 * (minDistance / 1000.0));
       emit(state.copyWith(deliveryFee: fee));
+      return null;
     } catch (e) {
-      debugPrint("Error calculating delivery: $e");
+      debugPrint('Error calculating delivery: $e');
+      return 'Could not calculate delivery: $e';
     }
   }
 
-  Future<String?> placeOrder() async {
-    if (_uid == null || state.items.isEmpty) return null;
+  /// Returns the new order id on success, or null on failure.
+  Future<String?> placeOrder({void Function(String message)? onError}) async {
+    if (_uid == null || state.items.isEmpty) {
+      onError?.call('Your cart is empty or you are not signed in.');
+      return null;
+    }
 
     try {
-      Position position = await Geolocator.getCurrentPosition();
+      final permissionError = await _ensureLocationPermission();
+      if (permissionError != null) {
+        onError?.call(permissionError);
+        return null;
+      }
+
+      final position = await _getPosition();
+      debugPrint('Place order position: ${position.latitude}, ${position.longitude}');
+
       final order = OrderModel(
-        id: '', 
+        id: '',
         userId: _uid!,
         items: state.items.values.toList(),
         status: OrderStatus.pending,
@@ -166,7 +226,8 @@ class CartCubit extends Cubit<CartState> {
       await clear();
       return docRef.id;
     } catch (e) {
-      debugPrint("Error placing order: $e");
+      debugPrint('Error placing order: $e');
+      onError?.call('Could not place order: $e');
       return null;
     }
   }

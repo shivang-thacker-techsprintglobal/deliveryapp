@@ -1,3 +1,4 @@
+import '../l10n/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/firebase_service.dart';
@@ -58,14 +59,14 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
         if (mounted) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(const SnackBar(content: Text('فشل رفع الصورة')));
+          ).showSnackBar(SnackBar(content: Text(S.uploadFailed)));
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('خطأ: $e')));
+        ).showSnackBar(SnackBar(content: Text(S.errorWith(e))));
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);
@@ -120,7 +121,7 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
               child: OutlinedButton.icon(
                 onPressed: _isUploading ? null : _pickAndUploadImage,
                 icon: const Icon(Icons.upload_file),
-                label: Text(hasImage ? 'تغيير الصورة' : 'رفع صورة'),
+                label: Text(hasImage ? S.changeImage : S.uploadImage),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(

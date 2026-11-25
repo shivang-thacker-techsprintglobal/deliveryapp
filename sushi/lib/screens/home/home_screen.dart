@@ -15,7 +15,6 @@ import '../order_now/order_now_screen.dart';
 import '../orders/my_orders_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../profile/profile_screen.dart';
-import '../restaurant/restaurant_screen.dart';
 import '../info/about_us_screen.dart';
 import '../info/contact_us_screen.dart';
 import 'offer_items_screen.dart';
@@ -60,12 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1: return 'Order Now';
       case 2: return 'My Orders';
       case 3: return 'Menu';
-      case 4: return 'Our Restaurant';
-      case 5: return 'Favorites';
-      case 6: return 'My Cart';
-      case 7: return 'My Account';
-      case 8: return 'About Us';
-      case 9: return 'Contact Us';
+      case 4: return 'Favorites';
+      case 5: return 'My Cart';
+      case 6: return 'My Account';
+      case 7: return 'About Us';
+      case 8: return 'Contact Us';
       default: return 'Sushi';
     }
   }
@@ -77,12 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1: return const OrderNowScreen(isShell: true);
       case 2: return const MyOrdersScreen(isShell: true);
       case 3: return const MenuScreen(isShell: true);
-      case 4: return const RestaurantScreen(isShell: true);
-      case 5: return const FavoritesScreen(isShell: true);
-      case 6: return const CartScreen(isShell: true);
-      case 7: return const ProfileScreen(isShell: true);
-      case 8: return const AboutUsScreen(isShell: true);
-      case 9: return const ContactUsScreen(isShell: true);
+      case 4: return const FavoritesScreen(isShell: true);
+      case 5: return const CartScreen(isShell: true);
+      case 6: return const ProfileScreen(isShell: true);
+      case 7: return const AboutUsScreen(isShell: true);
+      case 8: return const ContactUsScreen(isShell: true);
       default: return const HomeContent();
     }
   }
@@ -118,13 +115,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildDrawerItem(Icons.shopping_bag_outlined, 'Order Now', 1),
                 _buildDrawerItem(Icons.list_alt_outlined, 'My Orders', 2),
                 _buildDrawerItem(Icons.restaurant_menu, 'Menu', 3),
-                _buildDrawerItem(Icons.store_outlined, AppStrings.menuRestaurant, 4),
-                _buildDrawerItem(Icons.favorite_border, AppStrings.menuFavorites, 5),
-                _buildDrawerItem(Icons.shopping_cart_outlined, AppStrings.menuCart, 6),
-                _buildDrawerItem(Icons.person_outline, 'My Account', 7),
+                _buildDrawerItem(Icons.favorite_border, AppStrings.menuFavorites, 4),
+                _buildDrawerItem(Icons.shopping_cart_outlined, AppStrings.menuCart, 5),
+                _buildDrawerItem(Icons.person_outline, 'My Account', 6),
                 const Divider(),
-                _buildDrawerItem(Icons.info_outline, 'About Us', 8),
-                _buildDrawerItem(Icons.contact_support_outlined, 'Contact Us', 9),
+                _buildDrawerItem(Icons.info_outline, 'About Us', 7),
+                _buildDrawerItem(Icons.contact_support_outlined, 'Contact Us', 8),
                 ListTile(
                   leading: const Icon(Icons.logout, color: AppColors.lightOrange),
                   title: const Text(AppStrings.logout),

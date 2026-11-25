@@ -24,6 +24,39 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>We need your location to calculate delivery fees and place your order.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>We need your location to calculate delivery fees and place your order.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>We need camera access so drivers can take a selfie and upload documents.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We need photo library access so drivers can upload ID and license images.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>We need permission to save photos related to driver registration.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Microphone access may be required when recording video with the camera.</string>
+		<key>UIApplicationSceneManifest</key>
+		<dict>
+			<key>UIApplicationSupportsMultipleScenes</key>
+			<false/>
+			<key>UISceneConfigurations</key>
+			<dict>
+				<key>UIWindowSceneSessionRoleApplication</key>
+				<array>
+					<dict>
+						<key>UISceneClassName</key>
+						<string>UIWindowScene</string>
+						<key>UISceneDelegateClassName</key>
+						<string>FlutterSceneDelegate</string>
+						<key>UISceneConfigurationName</key>
+						<string>flutter</string>
+						<key>UISceneStoryboardFile</key>
+						<string>Main</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>

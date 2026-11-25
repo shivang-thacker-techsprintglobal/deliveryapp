@@ -60,10 +60,10 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('إدارة المطاعم', style: AppTheme.pageTitle),
+            Text(S.manageRestaurants, style: AppTheme.pageTitle),
             const SizedBox(height: 4),
             Text(
-              'عرض وإدارة المطاعم المشاركة',
+              S.manageRestaurantsSub,
               style: AppTheme.bodyText.copyWith(color: AppTheme.textSecondary),
             ),
           ],
@@ -75,7 +75,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
             onChanged: (v) => setState(() => _search = v),
             style: AppTheme.bodyText,
             decoration: InputDecoration(
-              hintText: 'بحث بالاسم...',
+              hintText: S.searchByName,
               prefixIcon: Icon(
                 Icons.search,
                 size: 18,
@@ -87,7 +87,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
         ElevatedButton.icon(
           onPressed: () => _showRestaurantDialog(),
           icon: const Icon(Icons.add, size: 18),
-          label: Text('إضافة مطعم'),
+          label: Text(S.addRestaurant),
           style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accent),
         ),
       ],
@@ -113,7 +113,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                 ),
                 const SizedBox(height: AppTheme.spaceM),
                 Text(
-                  'لا توجد مطاعم حتى الآن',
+                  S.noRestaurantsYet,
                   style: AppTheme.bodyText.copyWith(color: AppTheme.textMuted),
                 ),
               ],
@@ -153,7 +153,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    'المطعم',
+                    S.restaurant,
                     style: AppTheme.smallText.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -162,7 +162,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    'عدد الفروع',
+                    S.branchesCount,
                     style: AppTheme.smallText.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -171,7 +171,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                 SizedBox(
                   width: 100,
                   child: Text(
-                    'الإجراءات',
+                    S.actions,
                     style: AppTheme.smallText.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -258,7 +258,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                           Expanded(
                             flex: 1,
                             child: Text(
-                              '${r.branches.length} فروع',
+                              S.branchesCountN(r.branches.length),
                               style: AppTheme.bodyText.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: AppTheme.primary,
@@ -320,11 +320,11 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('إدارة الفروع', style: AppTheme.sectionTitle),
+              Text(S.manageBranches, style: AppTheme.sectionTitle),
               ElevatedButton.icon(
                 onPressed: () => _showBranchDialog(r),
                 icon: const Icon(Icons.add, size: 16),
-                label: Text('إضافة فرع', style: const TextStyle(fontSize: 12)),
+                label: Text(S.addBranch, style: TextStyle(fontSize: 12)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
                   foregroundColor: AppTheme.primary,
@@ -347,7 +347,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
               ),
               child: Center(
                 child: Text(
-                  'لا توجد فروع مسجلة حتى الآن',
+                  S.noBranchesYet,
                   style: AppTheme.bodyText.copyWith(color: AppTheme.textMuted),
                 ),
               ),
@@ -397,7 +397,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'الحالة: ${b.status}',
+                  S.statusWithValue(b.status),
                   style: AppTheme.smallText.copyWith(
                     color: b.status.toLowerCase() == 'open'
                         ? AppTheme.success
@@ -438,7 +438,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setState) => AlertDialog(
           title: Text(
-            branch == null ? 'إضافة فرع جديد' : 'تعديل الفرع',
+            branch == null ? S.addNewBranch : S.editBranch,
             style: AppTheme.sectionTitle,
           ),
           content: SizedBox(
@@ -448,21 +448,21 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
               children: [
                 TextField(
                   controller: nameC,
-                  decoration: const InputDecoration(
-                    labelText: 'اسم الفرع (إنجليزي)',
+                  decoration: InputDecoration(
+                    labelText: S.branchNameEn,
                   ),
                 ),
                 const SizedBox(height: AppTheme.spaceS),
                 TextField(
                   controller: nameArC,
-                  decoration: const InputDecoration(
-                    labelText: 'اسم الفرع (عربي)',
+                  decoration: InputDecoration(
+                    labelText: S.branchNameAr,
                   ),
                 ),
                 const SizedBox(height: AppTheme.spaceS),
                 InputDecorator(
-                  decoration: const InputDecoration(
-                    labelText: 'الحالة',
+                  decoration: InputDecoration(
+                    labelText: S.status,
                     border: OutlineInputBorder(),
                   ),
                   child: DropdownButtonHideUnderline(
@@ -470,9 +470,9 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                       value: status,
                       isExpanded: true,
                       isDense: true,
-                      items: const [
-                        DropdownMenuItem(value: 'open', child: Text('مفتوح')),
-                        DropdownMenuItem(value: 'close', child: Text('مغلق')),
+                      items: [
+                        DropdownMenuItem(value: 'open', child: Text(S.open)),
+                        DropdownMenuItem(value: 'close', child: Text(S.closed)),
                       ],
                       onChanged: (v) {
                         if (v != null) setState(() => status = v);
@@ -560,11 +560,11 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          'تأكيد الحذف',
+          S.confirmDelete,
           style: AppTheme.sectionTitle.copyWith(color: AppTheme.error),
         ),
         content: Text(
-          'هل أنت متأكد من حذف فرع "${branch.name.isNotEmpty ? branch.name : branch.nameAr}"؟',
+          S.deleteBranchMsg(branch.name.isNotEmpty ? branch.name : branch.nameAr),
           style: AppTheme.bodyText,
         ),
         actions: [
@@ -611,7 +611,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setState) => AlertDialog(
           title: Text(
-            restaurant == null ? 'إضافة مطعم' : 'تعديل المطعم',
+            restaurant == null ? S.addRestaurant : S.editRestaurant,
             style: AppTheme.sectionTitle,
           ),
           content: SizedBox(
@@ -622,30 +622,30 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                 children: [
                   TextField(
                     controller: nameC,
-                    decoration: const InputDecoration(labelText: 'اسم المطعم'),
+                    decoration: InputDecoration(labelText: S.restaurantName),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: descC,
-                    decoration: const InputDecoration(labelText: 'الوصف'),
+                    decoration: InputDecoration(labelText: S.description),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: phoneC,
-                    decoration: const InputDecoration(
-                      labelText: 'رقم الهاتف (الرئيسي)',
+                    decoration: InputDecoration(
+                      labelText: S.mainPhone,
                     ),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   TextField(
                     controller: addressC,
-                    decoration: const InputDecoration(
-                      labelText: 'العنوان (الرئيسي)',
+                    decoration: InputDecoration(
+                      labelText: S.mainAddress,
                     ),
                   ),
                   const SizedBox(height: AppTheme.spaceS),
                   ImageUploadField(
-                    label: 'صورة المطعم',
+                    label: S.restaurantImage,
                     currentImageUrl: imgC.text,
                     folderName: 'restaurants',
                     onImageUploaded: (url) {
@@ -738,7 +738,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
           style: AppTheme.sectionTitle.copyWith(color: AppTheme.error),
         ),
         content: Text(
-          'هل أنت متأكد من حذف المطعم ${r.name} وجميع فروعه؟',
+          S.deleteRestaurantMsg(r.name),
           style: AppTheme.bodyText,
         ),
         actions: [

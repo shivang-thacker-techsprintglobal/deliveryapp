@@ -172,11 +172,11 @@ class _UsersScreenState extends State<UsersScreen> {
                     width: 1,
                   ),
                 ),
-                columns: const [
-                  DataColumn(label: Expanded(child: Text('المستخدم'))),
-                  DataColumn(label: Text('تاريخ الانضمام')),
-                  DataColumn(label: Text('رقم الهاتف')),
-                  DataColumn(label: Text('الإجراءات')),
+                columns: [
+                  DataColumn(label: Expanded(child: Text(S.user))),
+                  DataColumn(label: Text(S.joinedDate)),
+                  DataColumn(label: Text(S.phone)),
+                  DataColumn(label: Text(S.actions)),
                 ],
                 rows: users.map((u) => _buildDataRow(u)).toList(),
               ),
@@ -241,7 +241,7 @@ class _UsersScreenState extends State<UsersScreen> {
               TextButton.icon(
                 icon: const Icon(Icons.bar_chart_rounded, size: 16),
                 label: Text(
-                  'الإحصائيات',
+                  S.statistics,
                   style: AppTheme.smallText.copyWith(color: AppTheme.info),
                 ),
                 style: TextButton.styleFrom(foregroundColor: AppTheme.info),
@@ -251,7 +251,7 @@ class _UsersScreenState extends State<UsersScreen> {
               TextButton.icon(
                 icon: const Icon(Icons.delete_outline, size: 16),
                 label: Text(
-                  'الحذف',
+                  S.delete,
                   style: AppTheme.smallText.copyWith(color: AppTheme.error),
                 ),
                 style: TextButton.styleFrom(foregroundColor: AppTheme.error),
@@ -274,7 +274,7 @@ class _UsersScreenState extends State<UsersScreen> {
             Expanded(
               child: _globalStatCard(
                 icon: Icons.check_circle_outline,
-                label: 'الطلبات المكتملة',
+                label: S.completedOrdersUser,
                 value: '${stats.completedOrders}',
                 color: AppTheme.success,
               ),
@@ -283,7 +283,7 @@ class _UsersScreenState extends State<UsersScreen> {
             Expanded(
               child: _globalStatCard(
                 icon: Icons.shopping_bag_outlined,
-                label: 'إجمالي الطلبات',
+                label: S.totalOrdersUser,
                 value: '${stats.totalOrders}',
                 color: AppTheme.info,
               ),
@@ -292,7 +292,7 @@ class _UsersScreenState extends State<UsersScreen> {
             Expanded(
               child: _globalStatCard(
                 icon: Icons.payments_outlined,
-                label: 'إجمالي المصروفات',
+                label: S.totalSpent,
                 value: 'EGP ${stats.totalSpent.toStringAsFixed(0)}',
                 color: AppTheme.warning,
               ),
@@ -301,7 +301,7 @@ class _UsersScreenState extends State<UsersScreen> {
             Expanded(
               child: _globalStatCard(
                 icon: Icons.cancel_outlined,
-                label: 'الطلبات الملغية',
+                label: S.cancelledOrdersUser,
                 value: '${stats.cancelledOrders}',
                 color: AppTheme.error,
               ),
@@ -387,7 +387,9 @@ class _UsersScreenState extends State<UsersScreen> {
                           Text(u.name, style: AppTheme.sectionTitle),
                           const SizedBox(height: 2),
                           Text(u.email, style: AppTheme.smallText),
-                          if (u.phone.isNotEmpty && u.phone != 'غير متوفر')
+                          if (u.phone.isNotEmpty &&
+                              u.phone != 'غير متوفر' &&
+                              u.phone != S.notAvailable)
                             Text(u.phone, style: AppTheme.smallText),
                         ],
                       ),

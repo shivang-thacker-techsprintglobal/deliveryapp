@@ -5,6 +5,7 @@ import '../theme/app_theme.dart';
 import '../widgets/admin_layout.dart';
 import '../widgets/driver_detail_drawer.dart';
 import '../providers/settings_provider.dart';
+import '../l10n/app_strings.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/app_image.dart';
 
@@ -79,10 +80,10 @@ class _DriversScreenState extends State<DriversScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('إدارة السائقين', style: AppTheme.pageTitle),
+              Text(S.manageDrivers, style: AppTheme.pageTitle),
               const SizedBox(height: 4),
               Text(
-                'عرض وإدارة واعتماد حسابات السائقين',
+                S.manageDriversSub,
                 style: AppTheme.bodyText.copyWith(
                   color: AppTheme.textSecondary,
                 ),
@@ -97,7 +98,7 @@ class _DriversScreenState extends State<DriversScreen> {
             onChanged: (v) => setState(() => _search = v),
             style: AppTheme.bodyText,
             decoration: InputDecoration(
-              hintText: 'بحث بالاسم أو الإيميل أو الهاتف...',
+              hintText: S.searchDrivers,
               prefixIcon: Icon(
                 Icons.search,
                 size: 18,
@@ -135,7 +136,7 @@ class _DriversScreenState extends State<DriversScreen> {
                   ),
                   const SizedBox(height: AppTheme.spaceM),
                   Text(
-                    'لا يوجد سائقين حتى الآن',
+                    S.noDriversYet,
                     style: AppTheme.bodyText.copyWith(
                       color: AppTheme.textMuted,
                     ),
@@ -176,10 +177,10 @@ class _DriversScreenState extends State<DriversScreen> {
                 ),
                 child: Row(
                   children: [
-                    _headerCell('السائق', flex: 3),
-                    _headerCell('الهاتف', flex: 2),
-                    _headerCell('حالة الاتصال', flex: 2),
-                    _headerCell('الاعتماد', flex: 2),
+                    _headerCell(S.driver, flex: 3),
+                    _headerCell(S.phone, flex: 2),
+                    _headerCell(S.connectionStatus, flex: 2),
+                    _headerCell(S.approval, flex: 2),
                   ],
                 ),
               ),
@@ -270,7 +271,7 @@ class _DriversScreenState extends State<DriversScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            driver.name.isNotEmpty ? driver.name : 'بدون اسم',
+                            driver.name.isNotEmpty ? driver.name : S.noName,
                             style: AppTheme.bodyText.copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
@@ -280,7 +281,7 @@ class _DriversScreenState extends State<DriversScreen> {
                           Text(
                             driver.email.isNotEmpty
                                 ? driver.email
-                                : 'لا يوجد بريد',
+                                : S.noEmail,
                             style: AppTheme.smallText.copyWith(
                               color: AppTheme.textSecondary,
                               fontSize: 11,
@@ -321,7 +322,7 @@ class _DriversScreenState extends State<DriversScreen> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      driver.isOnline ? 'Online' : 'Offline',
+                      driver.isOnline ? S.online : S.offline,
                       style: AppTheme.smallText.copyWith(
                         color: driver.isOnline
                             ? const Color(0xFF3B82F6)
@@ -354,7 +355,7 @@ class _DriversScreenState extends State<DriversScreen> {
                     ),
                   ),
                   child: Text(
-                    driver.isApproved ? 'Approved' : 'Not Approved',
+                    driver.isApproved ? S.approved : S.notApproved,
                     style: AppTheme.smallText.copyWith(
                       color: driver.isApproved
                           ? AppTheme.success

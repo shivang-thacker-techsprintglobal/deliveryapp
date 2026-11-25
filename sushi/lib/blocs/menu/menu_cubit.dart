@@ -30,6 +30,11 @@ class MenuCubit extends Cubit<MenuState> {
   Future<void> selectCategory(int index) async {
     if (state is MenuLoaded) {
       final currentState = state as MenuLoaded;
+      if (currentState.categories.isEmpty ||
+          index < 0 ||
+          index >= currentState.categories.length) {
+        return;
+      }
       try {
         final catId = currentState.categories[index].firebaseId!;
         final itemsSnapshot = await _firestore.collection('cat').doc(catId).collection('items').get();
