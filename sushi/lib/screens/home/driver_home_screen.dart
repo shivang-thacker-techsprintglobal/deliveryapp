@@ -80,7 +80,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               Polyline(
                 polylineId: const PolylineId('road_route'),
                 points: points,
-                color: const Color(0xFFF4A73D),
+                color: AppColors.vermillion,
                 width: 5,
               ),
             };
@@ -228,7 +228,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             appBar: AppBar(
               title: Text(_isViewingActiveOrder ? 'Active Task' : 'Driver Dashboard', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               centerTitle: true,
-              backgroundColor: const Color(0xFFF4A73D),
+              backgroundColor: AppColors.ink,
               elevation: 0,
               leading: _isViewingActiveOrder 
                 ? IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white), onPressed: () => setState(() => _isViewingActiveOrder = false))
@@ -254,7 +254,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 );
               },
               backgroundColor: Colors.white,
-              child: const Icon(Icons.my_location, color: Color(0xFFF4A73D)),
+              child: const Icon(Icons.my_location, color: AppColors.vermillion),
             ) : null,
           );
         },
@@ -290,7 +290,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         contentPadding: const EdgeInsets.all(16),
         title: Text('Order #${order.id.substring(0, 5)}', style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text('Status: ${order.status.name.toUpperCase()}'),
-        trailing: const Icon(Icons.map, color: Color(0xFFF4A73D)),
+        trailing: const Icon(Icons.map, color: AppColors.vermillion),
         onTap: () => setState(() => _isViewingActiveOrder = true),
       ),
     );
@@ -306,7 +306,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         subtitle: Text('${order.totalAmount} EGP'),
         trailing: ElevatedButton(
           onPressed: () => _updateOrderStatus(order.id, OrderStatus.driverAssigned),
-          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF4A73D)),
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.vermillion),
           child: const Text('ACCEPT', style: TextStyle(color: Colors.white)),
         ),
       ),
@@ -444,7 +444,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     final email = FirebaseAuth.instance.currentUser?.email;
     return Drawer(
       child: Column(children: [
-        UserAccountsDrawerHeader(decoration: const BoxDecoration(color: Color(0xFFF4A73D)), currentAccountPicture: const CircleAvatar(backgroundColor: Colors.white, child: Icon(Icons.delivery_dining, color: Color(0xFFF4A73D))), accountName: const Text('Driver Mode'), accountEmail: Text(email ?? '')),
+        UserAccountsDrawerHeader(decoration: const BoxDecoration(color: AppColors.vermillion), currentAccountPicture: const CircleAvatar(backgroundColor: Colors.white, child: Icon(Icons.delivery_dining, color: AppColors.vermillion)), accountName: const Text('Driver Mode'), accountEmail: Text(email ?? '')),
         ListTile(
           leading: const Icon(Icons.person),
           title: const Text('My Profile'),

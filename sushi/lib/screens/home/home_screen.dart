@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/app_colors.dart';
 import '../../widgets/app_strings.dart';
 import '../../services/auth_service.dart';
@@ -30,8 +30,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
   UserModel? _userData;
-  
-  // Navigation State
+
   int _currentIndex = 0;
 
   @override
@@ -52,55 +51,89 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Get current title based on section
   String _getTitle() {
     switch (_currentIndex) {
-      case 0: return 'Sushi';
-      case 1: return 'Order Now';
-      case 2: return 'My Orders';
-      case 3: return 'Menu';
-      case 4: return 'Favorites';
-      case 5: return 'My Cart';
-      case 6: return 'My Account';
-      case 7: return 'About Us';
-      case 8: return 'Contact Us';
-      default: return 'Sushi';
+      case 0:
+        return 'Sushi Delivery';
+      case 1:
+        return 'Order Now';
+      case 2:
+        return 'My Orders';
+      case 3:
+        return 'Menu';
+      case 4:
+        return 'Favorites';
+      case 5:
+        return 'My Cart';
+      case 6:
+        return 'My Account';
+      case 7:
+        return 'About Us';
+      case 8:
+        return 'Contact Us';
+      default:
+        return 'Sushi Delivery';
     }
   }
 
-  // Get current content based on section
   Widget _getContent() {
     switch (_currentIndex) {
-      case 0: return const HomeContent();
-      case 1: return const OrderNowScreen(isShell: true);
-      case 2: return const MyOrdersScreen(isShell: true);
-      case 3: return const MenuScreen(isShell: true);
-      case 4: return const FavoritesScreen(isShell: true);
-      case 5: return const CartScreen(isShell: true);
-      case 6: return const ProfileScreen(isShell: true);
-      case 7: return const AboutUsScreen(isShell: true);
-      case 8: return const ContactUsScreen(isShell: true);
-      default: return const HomeContent();
+      case 0:
+        return const HomeContent();
+      case 1:
+        return const OrderNowScreen(isShell: true);
+      case 2:
+        return const MyOrdersScreen(isShell: true);
+      case 3:
+        return const MenuScreen(isShell: true);
+      case 4:
+        return const FavoritesScreen(isShell: true);
+      case 5:
+        return const CartScreen(isShell: true);
+      case 6:
+        return const ProfileScreen(isShell: true);
+      case 7:
+        return const AboutUsScreen(isShell: true);
+      case 8:
+        return const ContactUsScreen(isShell: true);
+      default:
+        return const HomeContent();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.paper,
       appBar: AppBar(
-        title: _currentIndex == 0 
-          ? Image.asset('assets/images/layer_2.png', height: 50)
-          : Text(_getTitle(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        // On My Orders (and other sections), show back to Home instead of only the menu icon.
+        title: _currentIndex == 0
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ClipOval(
+                    child: Image.asset(
+                      'assets/images/brand_logo.jpg',
+                      height: 34,
+                      width: 34,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Sushi Delivery',
+                    style: GoogleFonts.playfairDisplay(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              )
+            : Text(_getTitle()),
         leading: _currentIndex == 0
             ? null
             : IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () => setState(() => _currentIndex = 0),
               ),
       ),
@@ -129,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildDrawerItem(Icons.info_outline, 'About Us', 7),
                 _buildDrawerItem(Icons.contact_support_outlined, 'Contact Us', 8),
                 ListTile(
-                  leading: const Icon(Icons.logout, color: AppColors.lightOrange),
+                  leading: const Icon(Icons.logout, color: AppColors.vermillion),
                   title: const Text(AppStrings.logout),
                   onTap: _handleLogout,
                 ),
@@ -144,38 +177,45 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildDrawerHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(top: 50, left: 20, bottom: 20, right: 20),
+      padding: const EdgeInsets.only(top: 56, left: 20, bottom: 24, right: 20),
       decoration: const BoxDecoration(
-        color: AppColors.lightOrange,
+        color: AppColors.ink,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: _userData?.image != null
-                ? CachedNetworkImage(
-                    imageUrl: _userData!.image!,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Image.asset('assets/images/userpng.png', width: 60),
-                    errorWidget: (context, url, error) => Image.asset('assets/images/userpng.png', width: 60),
-                  )
-                : Image.asset('assets/images/userpng.png', width: 60),
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.gold, width: 1.5),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: _userData?.image != null
+                  ? CachedNetworkImage(
+                      imageUrl: _userData!.image!,
+                      width: 64,
+                      height: 64,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Image.asset('assets/images/userpng.png', width: 64),
+                      errorWidget: (context, url, error) => Image.asset('assets/images/userpng.png', width: 64),
+                    )
+                  : Image.asset('assets/images/userpng.png', width: 64),
+            ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Text(
             _userData?.name ?? 'Guest User',
-            style: const TextStyle(
+            style: GoogleFonts.playfairDisplay(
               color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
           ),
           Text(
             _userData?.email ?? '',
-            style: const TextStyle(
+            style: GoogleFonts.sourceSans3(
               color: Colors.white70,
               fontSize: 14,
             ),
@@ -186,20 +226,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildDrawerItem(IconData icon, String title, int index) {
+    final selected = _currentIndex == index;
     return ListTile(
-      leading: Icon(icon, color: AppColors.lightOrange),
+      leading: Icon(icon, color: selected ? AppColors.vermillion : AppColors.gray),
       title: Text(
         title,
-        style: TextStyle(
-          color: _currentIndex == index ? AppColors.lightOrange : Colors.black,
-          fontWeight: _currentIndex == index ? FontWeight.bold : FontWeight.normal,
+        style: GoogleFonts.sourceSans3(
+          color: selected ? AppColors.vermillion : AppColors.ink,
+          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
         ),
       ),
       onTap: () {
         setState(() {
           _currentIndex = index;
         });
-        Navigator.pop(context); // Close Drawer
+        Navigator.pop(context);
       },
     );
   }
@@ -250,37 +291,87 @@ class _HomeContentState extends State<HomeContent> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
-            height: 280,
-            color: AppColors.white,
-            child: Image.asset(
-              'assets/images/layer_10.png',
-              fit: BoxFit.cover,
-              errorBuilder: (c, e, s) => Container(color: AppColors.lightOrange),
+            height: 240,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(
+                  'assets/images/home_banner.jpg',
+                  fit: BoxFit.cover,
+                  errorBuilder: (c, e, s) => Container(color: AppColors.ink),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.1),
+                        AppColors.ink.withValues(alpha: 0.75),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 20,
+                  right: 20,
+                  bottom: 22,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Today’s kitchen',
+                        style: GoogleFonts.playfairDisplay(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Handcrafted sushi, ready for delivery',
+                        style: GoogleFonts.sourceSans3(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 8),
+            child: Text(
+              'Special offers',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: AppColors.ink,
               ),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             child: _isLoadingOffers
-                ? const Center(child: CircularProgressIndicator(color: AppColors.lightOrange))
+                ? const Padding(
+                    padding: EdgeInsets.all(40),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 : GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: _offers.length,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.8,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.82,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
                     ),
                     itemBuilder: (context, index) {
                       final offer = _offers[index];

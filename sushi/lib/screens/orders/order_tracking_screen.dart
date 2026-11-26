@@ -68,7 +68,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
               Polyline(
                 polylineId: const PolylineId('road_route'),
                 points: points,
-                color: const Color(0xFFF4A73D),
+                color: AppColors.vermillion,
                 width: 5,
               ),
             };
@@ -148,14 +148,14 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
       appBar: AppBar(
         title: const Text('Track Order', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
         elevation: 0,
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('orders').doc(widget.orderId).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData || snapshot.data!.data() == null) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFF4A73D)));
+            return const Center(child: CircularProgressIndicator(color: AppColors.vermillion));
           }
           
           final order = OrderModel.fromJson(snapshot.data!.data() as Map<String, dynamic>, snapshot.data!.id);

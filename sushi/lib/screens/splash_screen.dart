@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
 import '../blocs/auth/auth_cubit.dart';
+import '../widgets/app_colors.dart';
 import 'auth/welcome_screen.dart';
 import 'home/home_screen.dart';
 import 'home/driver_home_screen.dart';
@@ -20,17 +22,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
-    // 1. Initialize light animations
+
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
     _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    // 2. Start animation and logic after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.forward();
       _handleStartUp();
@@ -47,12 +47,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     final minTime = Future.delayed(const Duration(milliseconds: 2000));
 
     try {
-      // Wait for Firebase (started in main.dart)
       if (widget.firebaseInit != null) {
         await widget.firebaseInit;
       }
 
-      // Now safe to access Firebase. Initialize Cubit check.
       if (!mounted) return;
       context.read<AuthCubit>().checkAuth();
 
@@ -89,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4A73D),
+      backgroundColor: AppColors.ink,
       body: Center(
         child: AnimatedBuilder(
           animation: _controller,
@@ -101,9 +99,55 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/images/layer_2.png', width: 120),
-                    const SizedBox(height: 30),
-                    const CircularProgressIndicator(color: Colors.white),
+                    Container(
+                      width: 128,
+                      height: 128,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.gold.withValues(alpha: 0.45), width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.35),
+                            blurRadius: 24,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/brand_logo.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                    Text(
+                      'Sushi Delivery',
+                      style: GoogleFonts.playfairDisplay(
+                        color: AppColors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Classic taste. Doorstep fresh.',
+                      style: GoogleFonts.sourceSans3(
+                        color: AppColors.gold,
+                        fontSize: 14,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 36),
+                    const SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: CircularProgressIndicator(
+                        color: AppColors.vermillion,
+                        strokeWidth: 2.5,
+                      ),
+                    ),
                   ],
                 ),
               ),

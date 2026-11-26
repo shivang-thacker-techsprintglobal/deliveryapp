@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/driver_model.dart';
 import '../../../services/auth_service.dart';
+import '../../../widgets/app_colors.dart';
 import '../../home/driver_home_screen.dart';
 
 /// Free-plan friendly driver registration.
@@ -92,7 +93,7 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Driver Registration'),
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
       ),
       body: Stack(
         children: [
@@ -151,7 +152,7 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
                   child: ElevatedButton(
                     onPressed: _isSubmitting ? null : _handleRegister,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF4A73D),
+                      backgroundColor: AppColors.vermillion,
                     ),
                     child: const Text(
                       'SUBMIT APPLICATION',
@@ -170,7 +171,7 @@ class _DriverRegisterScreenState extends State<DriverRegisterScreen> {
             Container(
               color: Colors.black26,
               child: const Center(
-                child: CircularProgressIndicator(color: Color(0xFFF4A73D)),
+                child: CircularProgressIndicator(color: AppColors.vermillion),
               ),
             ),
         ],

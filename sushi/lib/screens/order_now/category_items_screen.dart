@@ -64,7 +64,7 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
               Stack(
                 children: [
                   Image.asset(
-                    'assets/images/layer_2_copy_3.png',
+                    'assets/images/home_banner.jpg',
                     width: double.infinity,
                     height: 220,
                     fit: BoxFit.fitWidth,
@@ -212,7 +212,7 @@ class _CategoryItemsScreenState extends State<CategoryItemsScreen> {
                   child: CachedNetworkImage(
                     imageUrl: item.image ?? '',
                     fit: BoxFit.cover,
-                    errorWidget: (c,e,s) => Image.asset('assets/images/backgroud_logo.png', fit: BoxFit.cover),
+                    errorWidget: (c,e,s) => Image.asset('assets/images/welcome_hero.jpg', fit: BoxFit.cover),
                   ),
                 ),
               ),

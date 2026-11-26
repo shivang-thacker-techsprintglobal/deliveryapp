@@ -12,9 +12,9 @@ import 'blocs/favorites/favorites_cubit.dart';
 import 'blocs/orders/orders_cubit.dart';
 import 'blocs/settings/settings_cubit.dart';
 import 'screens/splash_screen.dart';
+import 'widgets/app_theme.dart';
 
 void main() async {
-  // 1. Initialize bindings immediately
   WidgetsFlutterBinding.ensureInitialized();
 
   // Edge-to-edge; native MainActivity pads bottom for the nav bar.
@@ -24,11 +24,10 @@ void main() async {
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.light,
     ),
   );
-  
-  // 2. Start Firebase initialization in parallel (non-blocking)
+
   final Future<FirebaseApp> firebaseInit = Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -50,7 +49,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final Future<FirebaseApp>? firebaseInit;
-  
+
   const MyApp({super.key, this.firebaseInit});
 
   @override
@@ -71,15 +70,8 @@ class MyApp extends StatelessWidget {
             Locale('en'),
             Locale('ar'),
           ],
-          theme: ThemeData(
-            primaryColor: const Color(0xFFF4A73D),
-            scaffoldBackgroundColor: Colors.white,
-            useMaterial3: true,
-          ),
-          darkTheme: ThemeData.dark().copyWith(
-            primaryColor: const Color(0xFFF4A73D),
-            scaffoldBackgroundColor: const Color(0xFF121212),
-          ),
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
           home: SplashScreen(firebaseInit: firebaseInit),
         );
       },

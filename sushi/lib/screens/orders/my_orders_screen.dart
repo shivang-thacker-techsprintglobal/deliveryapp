@@ -29,7 +29,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       appBar: widget.isShell ? null : AppBar(
         title: const Text('Orders', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),

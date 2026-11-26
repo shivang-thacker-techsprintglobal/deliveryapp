@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/app_colors.dart';
-import '../../widgets/app_strings.dart';
 import '../../blocs/auth/auth_cubit.dart';
 import '../../blocs/auth/auth_state.dart';
 import '../../models/user_model.dart';
@@ -35,45 +35,67 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.paper,
         body: Stack(
           children: [
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Top Sushi Decoration (Same as Android selective_color_1)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Image.asset('assets/images/selective_color_1.png', width: 250),
+                  SizedBox(
+                    height: 200,
+                    width: double.infinity,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          'assets/images/auth_header.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                AppColors.paper,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Register !',
-                          style: TextStyle(
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF322E2B),
+                        Text(
+                          'Create account',
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 34,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.ink,
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        
-                        _buildUnderlineField(_nameController, 'Username', Icons.person_outline),
-                        _buildUnderlineField(_emailController, 'E-mail', Icons.email_outlined, keyboardType: TextInputType.emailAddress),
-                        _buildUnderlineField(_passwordController, 'Password', Icons.lock_outline, obscureText: true),
-                        _buildUnderlineField(_phoneController, 'Phone Number', Icons.phone_outlined, keyboardType: TextInputType.phone),
-                        
-                        const SizedBox(height: 20),
-                        
-                        // Register Now Button
+                        const SizedBox(height: 6),
+                        Text(
+                          'Join Sushi Delivery in a minute',
+                          style: GoogleFonts.sourceSans3(
+                            color: AppColors.gray,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+                        _buildField(_nameController, 'Username', Icons.person_outline),
+                        _buildField(_emailController, 'E-mail', Icons.email_outlined, keyboardType: TextInputType.emailAddress),
+                        _buildField(_passwordController, 'Password', Icons.lock_outline, obscureText: true),
+                        _buildField(_phoneController, 'Phone Number', Icons.phone_outlined, keyboardType: TextInputType.phone),
+                        const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
-                          height: 55,
                           child: ElevatedButton(
                             onPressed: () {
                               final name = _nameController.text.trim();
@@ -85,47 +107,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 context.read<AuthCubit>().register(email, password, userModel);
                               }
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.lightOrange,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                            ),
-                            child: const Text('Register Now', style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                            child: const Text('Register Now'),
                           ),
                         ),
-                        
-                        // Google / Facebook register disabled for now
-                        // const SizedBox(height: 15),
-                        // Row(
-                        //   children: [
-                        //     const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
-                        //     Padding(
-                        //       padding: const EdgeInsets.symmetric(horizontal: 10),
-                        //       child: Text('OR', style: TextStyle(color: Colors.orange.shade700, fontSize: 12, fontWeight: FontWeight.bold)),
-                        //     ),
-                        //     const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
-                        //   ],
-                        // ),
-                        // const SizedBox(height: 15),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //   children: [
-                        //     _socialButton('assets/images/google.png', () => context.read<AuthCubit>().loginWithGoogle()),
-                        //     _socialButton('assets/images/facebook.png', () {}),
-                        //   ],
-                        // ),
-
-                        const SizedBox(height: 30),
-                        
-                        // Bottom Link
+                        const SizedBox(height: 28),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text("Already have an account, "),
+                            Text(
+                              'Already have an account? ',
+                              style: GoogleFonts.sourceSans3(color: AppColors.gray),
+                            ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                );
                               },
-                              child: const Text("Sign in?", style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text(
+                                'Sign in',
+                                style: GoogleFonts.sourceSans3(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.vermillion,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -136,14 +142,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               ),
             ),
-            
-            // Loading Overlay
             BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 if (state is AuthLoading) {
                   return Container(
                     color: Colors.black26,
-                    child: const Center(child: CircularProgressIndicator(color: AppColors.lightOrange)),
+                    child: const Center(child: CircularProgressIndicator(color: AppColors.vermillion)),
                   );
                 }
                 return const SizedBox.shrink();
@@ -155,29 +159,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildUnderlineField(TextEditingController controller, String hint, IconData icon, {bool obscureText = false, TextInputType? keyboardType}) {
+  Widget _buildField(
+    TextEditingController controller,
+    String hint,
+    IconData icon, {
+    bool obscureText = false,
+    TextInputType? keyboardType,
+  }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
         obscureText: obscureText,
         keyboardType: keyboardType,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.grey),
-          prefixIcon: Icon(icon, color: Colors.grey),
-          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade400)),
-          focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.lightOrange)),
+          prefixIcon: Icon(icon),
         ),
       ),
     );
   }
-
-  // Widget _socialButton(String assetPath, VoidCallback? onTap) {
-  //   return InkResponse(
-  //     onTap: onTap,
-  //     radius: 35,
-  //     child: Image.asset(assetPath, height: 65, fit: BoxFit.contain),
-  //   );
-  // }
 }

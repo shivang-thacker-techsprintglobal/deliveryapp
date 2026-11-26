@@ -27,7 +27,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
           Container(
             width: MediaQuery.of(context).size.width * 0.40,
             height: double.infinity,
-            color: const Color(0xFFF4A73D),
+            color: AppColors.vermillion,
           ),
 
           // Main Content
@@ -59,7 +59,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     child: Text(
                       widget.item.name ?? '',
                       style: const TextStyle(
-                        color: Color(0xFFF4A73D),
+                        color: AppColors.vermillion,
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                       ),
@@ -73,7 +73,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     decoration: const BoxDecoration(
-                      color: Color(0xFFF4A73D),
+                      color: AppColors.vermillion,
                       borderRadius: BorderRadius.only(
                         topRight: Radius.circular(30),
                         bottomRight: Radius.circular(30),
@@ -111,7 +111,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                               imageUrl: widget.item.image ?? '',
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(color: Colors.grey.shade200),
-                              errorWidget: (context, url, error) => Image.asset('assets/images/backgroud_logo.png', fit: BoxFit.cover),
+                              errorWidget: (context, url, error) => Image.asset('assets/images/welcome_hero.jpg', fit: BoxFit.cover),
                             ),
                           ),
                         ),
@@ -132,7 +132,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                                 width: 50,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF4A73D).withOpacity(0.9),
+                                  color: AppColors.vermillion.withOpacity(0.9),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
@@ -159,7 +159,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Color(0xFFF4A73D),
+                      color: AppColors.vermillion,
                       fontSize: 16,
                       height: 1.5,
                     ),
@@ -181,13 +181,13 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           SnackBar(
                             content: Text('${widget.item.name} added to cart!'),
                             duration: const Duration(seconds: 2),
-                            backgroundColor: const Color(0xFFF4A73D),
+                            backgroundColor: AppColors.vermillion,
                           ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        foregroundColor: const Color(0xFFF4A73D),
+                        foregroundColor: AppColors.vermillion,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                       ),
                       child: const Text(

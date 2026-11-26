@@ -19,7 +19,7 @@ class CartScreen extends StatelessWidget {
       appBar: isShell ? null : AppBar(
         title: const Text('My Cart', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
         elevation: 0,
       ),
       body: BlocBuilder<CartCubit, CartState>(

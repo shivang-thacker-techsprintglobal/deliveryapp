@@ -42,18 +42,18 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
       appBar: AppBar(
         title: const Text('My Profile', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
         elevation: 0,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFFF4A73D)))
+          ? const Center(child: CircularProgressIndicator(color: AppColors.vermillion))
           : SingleChildScrollView(
               child: Column(
                 children: [
                   Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.asset('assets/images/layer_2_copy_5.png', width: double.infinity, height: 180, fit: BoxFit.cover),
+                      Image.asset('assets/images/profile_header.jpg', width: double.infinity, height: 180, fit: BoxFit.cover),
                       Positioned(
                         top: 30,
                         child: Container(

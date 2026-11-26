@@ -57,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Edit ${field.toUpperCase()}',
-          style: const TextStyle(color: Color(0xFFF4A73D), fontWeight: FontWeight.bold),
+          style: const TextStyle(color: AppColors.vermillion, fontWeight: FontWeight.bold),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -67,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: InputDecoration(
                 hintText: 'Enter new $field',
                 enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFFF4A73D))),
+                focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.vermillion)),
               ),
               keyboardType: field == 'phone' ? TextInputType.phone : TextInputType.text,
             ),
@@ -82,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Verification link sent!')));
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8BD875),
+                    backgroundColor: AppColors.greenOpen,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   child: const Text('ACTIVATE / VERIFY', style: TextStyle(color: Colors.white)),
@@ -100,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.pop(context);
               _loadUserData();
             },
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF4A73D)),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.vermillion),
             child: const Text('SAVE', style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -125,10 +125,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: bgColor,
       appBar: widget.isShell ? null : AppBar(
         title: const Text('My Account', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFFF4A73D)))
+          ? const Center(child: CircularProgressIndicator(color: AppColors.vermillion))
           : SingleChildScrollView(
               child: Column(
                 children: [
@@ -143,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           alignment: Alignment.bottomCenter,
                           heightFactor: 0.5,
                           child: Image.asset(
-                            'assets/images/layer_2_copy_5.png',
+                            'assets/images/profile_header.jpg',
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
@@ -181,9 +181,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       imageUrl: _userData!.image!,
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                                      errorWidget: (context, url, error) => Image.asset('assets/images/backgroud_logo.png', fit: BoxFit.cover),
+                                      errorWidget: (context, url, error) => Image.asset('assets/images/welcome_hero.jpg', fit: BoxFit.cover),
                                     )
-                                  : Image.asset('assets/images/backgroud_logo.png', fit: BoxFit.cover),
+                                  : Image.asset('assets/images/welcome_hero.jpg', fit: BoxFit.cover),
                             ),
                             
                             // Edit Pen Button
@@ -196,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   width: 44,
                                   height: 44,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF4A73D),
+                                    color: AppColors.vermillion,
                                     shape: BoxShape.circle,
                                     border: Border.all(color: Colors.white, width: 4),
                                   ),
@@ -205,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             if (_isUploading)
-                              const CircularProgressIndicator(color: Color(0xFFF4A73D)),
+                              const CircularProgressIndicator(color: AppColors.vermillion),
                           ],
                         ),
                       ),
@@ -306,7 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(width: 8),
               Icon(
                 isVerified ? Icons.check_circle : Icons.cancel,
-                color: isVerified ? const Color(0xFF8BD875) : Colors.grey.shade400,
+                color: isVerified ? AppColors.greenOpen : Colors.grey.shade400,
                 size: 20,
               ),
             ],

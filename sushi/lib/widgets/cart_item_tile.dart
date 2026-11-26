@@ -106,7 +106,7 @@ class CartItemTile extends StatelessWidget {
                   child: CachedNetworkImage(
                     imageUrl: item.image ?? '',
                     fit: BoxFit.cover,
-                    errorWidget: (c,e,s) => Image.asset('assets/images/backgroud_logo.png', fit: BoxFit.cover),
+                    errorWidget: (c,e,s) => Image.asset('assets/images/welcome_hero.jpg', fit: BoxFit.cover),
                   ),
                 ),
               ),

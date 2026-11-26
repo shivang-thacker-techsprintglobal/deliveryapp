@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/app_colors.dart';
-import '../../widgets/app_strings.dart';
 import '../../blocs/auth/auth_cubit.dart';
 import '../../blocs/auth/auth_state.dart';
-// import 'package:sushi/services/biometric_service.dart'; // fingerprint disabled
 import 'register_screen.dart';
 import 'forget_password_screen.dart';
 import 'driver_auth/driver_login_screen.dart';
@@ -20,14 +19,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  // final BiometricService _biometricService = BiometricService();
-
-  // void _handleBiometric() async {
-  //   bool authenticated = await _biometricService.authenticate();
-  //   if (authenticated && mounted) {
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Biometric Authentication Successful!')));
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -43,76 +34,95 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.paper,
         body: Stack(
           children: [
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Top Sushi Decoration
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Image.asset('assets/images/sign_in_background_suhi.png', width: 250),
+                  SizedBox(
+                    height: 220,
+                    width: double.infinity,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          'assets/images/auth_header.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                AppColors.paper,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Sign In !',
-                          style: TextStyle(
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF322E2B),
+                        Text(
+                          'Welcome back',
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 34,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.ink,
                           ),
                         ),
-                        const SizedBox(height: 30),
-                        
-                        // Underline Username Field
+                        const SizedBox(height: 6),
+                        Text(
+                          'Sign in to continue ordering',
+                          style: GoogleFonts.sourceSans3(
+                            color: AppColors.gray,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(height: 28),
                         TextField(
                           controller: _emailController,
-                          decoration: InputDecoration(
-                            hintText: 'Username',
-                            hintStyle: const TextStyle(color: Colors.grey),
-                            prefixIcon: const Icon(Icons.person_outline, color: Colors.grey),
-                            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade400)),
-                            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.lightOrange)),
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            hintText: 'Email',
+                            prefixIcon: Icon(Icons.person_outline),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        
-                        // Underline Password Field
+                        const SizedBox(height: 14),
                         TextField(
                           controller: _passwordController,
                           obscureText: true,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Password',
-                            hintStyle: const TextStyle(color: Colors.grey),
-                            prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
-                            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade400)),
-                            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.lightOrange)),
+                            prefixIcon: Icon(Icons.lock_outline),
                           ),
                         ),
-                        
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()));
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()),
+                              );
                             },
-                            child: const Text('Forget Password?', style: TextStyle(color: Colors.black54)),
+                            child: Text(
+                              'Forget Password?',
+                              style: GoogleFonts.sourceSans3(color: AppColors.gray),
+                            ),
                           ),
                         ),
-                        
-                        const SizedBox(height: 20),
-                        
-                        // Sign In Button
+                        const SizedBox(height: 8),
                         SizedBox(
                           width: double.infinity,
-                          height: 55,
                           child: ElevatedButton(
                             onPressed: () {
                               final email = _emailController.text.trim();
@@ -121,44 +131,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 context.read<AuthCubit>().login(email, password);
                               }
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.lightOrange,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                            ),
-                            child: const Text('Sign In', style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                            child: const Text('Sign In'),
                           ),
                         ),
-                        
-                        // Google / Facebook / Fingerprint login disabled for now
-                        // const SizedBox(height: 20),
-                        // Row(
-                        //   children: [
-                        //     const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
-                        //     Padding(
-                        //       padding: const EdgeInsets.symmetric(horizontal: 10),
-                        //       child: Text('OR', style: TextStyle(color: Colors.orange.shade700, fontSize: 12, fontWeight: FontWeight.bold)),
-                        //     ),
-                        //     const Expanded(child: Divider(color: AppColors.lightOrange, thickness: 1.5)),
-                        //   ],
-                        // ),
-                        // const SizedBox(height: 20),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //   children: [
-                        //     _socialButton('assets/images/google.png', () => context.read<AuthCubit>().loginWithGoogle()),
-                        //     IconButton(
-                        //       icon: const Icon(Icons.fingerprint, size: 50, color: Color(0xFFF4A73D)),
-                        //       onPressed: _handleBiometric,
-                        //     ),
-                        //     _socialButton('assets/images/facebook.png', () {}),
-                        //   ],
-                        // ),
-
-                        const SizedBox(height: 20),
-
+                        const SizedBox(height: 14),
                         SizedBox(
                           width: double.infinity,
-                          height: 50,
                           child: OutlinedButton.icon(
                             onPressed: () {
                               Navigator.pushReplacement(
@@ -168,35 +146,32 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.delivery_dining, color: AppColors.lightOrange),
-                            label: const Text(
-                              'Continue as Driver',
-                              style: TextStyle(
-                                color: AppColors.lightOrange,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: AppColors.lightOrange, width: 1.5),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
+                            icon: const Icon(Icons.delivery_dining),
+                            label: const Text('Continue as Driver'),
                           ),
                         ),
-
-                        const SizedBox(height: 30),
-                        
-                        // Bottom Link
+                        const SizedBox(height: 28),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text("Don't have an account, "),
+                            Text(
+                              "Don't have an account? ",
+                              style: GoogleFonts.sourceSans3(color: AppColors.gray),
+                            ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterScreen()));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                                );
                               },
-                              child: const Text("Register?", style: TextStyle(fontWeight: FontWeight.bold)),
+                              child: Text(
+                                'Register',
+                                style: GoogleFonts.sourceSans3(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.vermillion,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -206,14 +181,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
-            
-            // Loading Overlay
             BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 if (state is AuthLoading) {
                   return Container(
                     color: Colors.black26,
-                    child: const Center(child: CircularProgressIndicator(color: AppColors.lightOrange)),
+                    child: const Center(child: CircularProgressIndicator(color: AppColors.vermillion)),
                   );
                 }
                 return const SizedBox.shrink();
@@ -224,12 +197,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  // Widget _socialButton(String assetPath, VoidCallback? onTap) {
-  //   return InkResponse(
-  //     onTap: onTap,
-  //     radius: 35,
-  //     child: Image.asset(assetPath, height: 55, fit: BoxFit.contain),
-  //   );
-  // }
 }

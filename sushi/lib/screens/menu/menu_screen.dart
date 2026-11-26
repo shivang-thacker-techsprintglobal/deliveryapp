@@ -29,7 +29,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEBEBEB),
+      backgroundColor: AppColors.paper,
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
           if (state is MenuLoading && state is! MenuLoaded) {
@@ -116,7 +116,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                     width: double.infinity,
                                     height: double.infinity,
                                     placeholder: (context, url) => const Center(child: CircularProgressIndicator(color: Colors.white)),
-                                    errorWidget: (c,e,s) => Image.asset('assets/images/backgroud_logo.png', fit: BoxFit.cover),
+                                    errorWidget: (c,e,s) => Image.asset('assets/images/welcome_hero.jpg', fit: BoxFit.cover),
                                   ),
                                 ),
                               ),
@@ -127,7 +127,7 @@ class _MenuScreenState extends State<MenuScreen> {
                               bottom: 10, // Match image height roughly (260 - 250 = 10 difference)
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF4A73D).withOpacity(0.15),
+                                  color: AppColors.vermillion.withOpacity(0.15),
                                   gradient: LinearGradient(
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
@@ -279,7 +279,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 height: 90,
                 padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10, offset: const Offset(0, 5))]),
-                child: ClipRRect(borderRadius: BorderRadius.circular(18), child: CachedNetworkImage(imageUrl: item.image ?? '', fit: BoxFit.cover, errorWidget: (c,e,s) => Image.asset('assets/images/backgroud_logo.png', fit: BoxFit.cover))),
+                child: ClipRRect(borderRadius: BorderRadius.circular(18), child: CachedNetworkImage(imageUrl: item.image ?? '', fit: BoxFit.cover, errorWidget: (c,e,s) => Image.asset('assets/images/welcome_hero.jpg', fit: BoxFit.cover))),
               ),
             ),
             Positioned(

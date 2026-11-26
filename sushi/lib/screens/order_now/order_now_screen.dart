@@ -27,11 +27,11 @@ class _OrderNowScreenState extends State<OrderNowScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEBEBEB),
+      backgroundColor: AppColors.paper,
       appBar: widget.isShell ? null : AppBar(
         title: const Text('Order Now', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
       ),
       body: Stack(
         children: [
@@ -42,7 +42,7 @@ class _OrderNowScreenState extends State<OrderNowScreen> {
               Stack(
                 children: [
                   Image.asset(
-                    'assets/images/layer_2_copy_3.png',
+                    'assets/images/home_banner.jpg',
                     width: double.infinity,
                     height: 220,
                     fit: BoxFit.fitWidth,
@@ -168,7 +168,7 @@ class _OrderNowScreenState extends State<OrderNowScreen> {
                   child: CachedNetworkImage(
                     imageUrl: category.image ?? '',
                     fit: BoxFit.cover,
-                    errorWidget: (c,e,s) => Image.asset('assets/images/backgroud_logo.png', fit: BoxFit.cover),
+                    errorWidget: (c,e,s) => Image.asset('assets/images/welcome_hero.jpg', fit: BoxFit.cover),
                   ),
                 ),
               ),

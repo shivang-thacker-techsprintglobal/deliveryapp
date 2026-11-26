@@ -17,7 +17,7 @@ class DriverFinanceScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('My Finance', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
         elevation: 0,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -27,7 +27,7 @@ class DriverFinanceScreen extends StatelessWidget {
             .where('status', isEqualTo: OrderStatus.delivered.name)
             .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator(color: Color(0xFFF4A73D)));
+          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator(color: AppColors.vermillion));
           
           final orders = snapshot.data!.docs.map((doc) => OrderModel.fromJson(doc.data() as Map<String, dynamic>, doc.id)).toList();
 

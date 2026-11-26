@@ -28,7 +28,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       appBar: widget.isShell ? null : AppBar(
         title: const Text('Favorites', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),

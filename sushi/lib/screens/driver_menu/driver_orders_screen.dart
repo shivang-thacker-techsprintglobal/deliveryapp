@@ -17,7 +17,7 @@ class DriverOrdersScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('My Deliveries', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF4A73D),
+        backgroundColor: AppColors.ink,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -37,7 +37,7 @@ class DriverOrdersScreen extends StatelessWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFF4A73D)));
+            return const Center(child: CircularProgressIndicator(color: AppColors.vermillion));
           }
           
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
