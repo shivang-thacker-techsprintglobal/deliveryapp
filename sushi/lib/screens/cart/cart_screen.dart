@@ -54,34 +54,35 @@ class CartScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: () async {
-                          final error = await context.read<CartCubit>().calculateDelivery();
-                          if (!context.mounted) return;
-                          if (error != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Delivery fee updated')),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.location_on_outlined, size: 18),
-                        label: const Text('CALCULATE DELIVERY'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.lightOrange,
-                          side: const BorderSide(color: AppColors.lightOrange),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
+                    // Delivery fee calculation hidden for now
+                    // SizedBox(
+                    //   width: double.infinity,
+                    //   child: OutlinedButton.icon(
+                    //     onPressed: () async {
+                    //       final error = await context.read<CartCubit>().calculateDelivery();
+                    //       if (!context.mounted) return;
+                    //       if (error != null) {
+                    //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                    //       } else {
+                    //         ScaffoldMessenger.of(context).showSnackBar(
+                    //           const SnackBar(content: Text('Delivery fee updated')),
+                    //         );
+                    //       }
+                    //     },
+                    //     icon: const Icon(Icons.location_on_outlined, size: 18),
+                    //     label: const Text('CALCULATE DELIVERY'),
+                    //     style: OutlinedButton.styleFrom(
+                    //       foregroundColor: AppColors.lightOrange,
+                    //       side: const BorderSide(color: AppColors.lightOrange),
+                    //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 15),
                     _buildPriceRow('Subtotal', '${state.subtotal.toStringAsFixed(2)} EGP'),
-                    _buildPriceRow('Delivery Fee', '${state.deliveryFee.toStringAsFixed(2)} EGP'),
+                    // _buildPriceRow('Delivery Fee', '${state.deliveryFee.toStringAsFixed(2)} EGP'),
                     const Divider(height: 20),
-                    _buildPriceRow('Total Amount', '${state.totalAmount.toStringAsFixed(2)} EGP', isTotal: true),
+                    _buildPriceRow('Total Amount', '${state.subtotal.toStringAsFixed(2)} EGP', isTotal: true),
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,

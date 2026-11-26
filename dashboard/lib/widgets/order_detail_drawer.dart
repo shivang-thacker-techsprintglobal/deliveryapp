@@ -547,7 +547,8 @@ class _OrderDetailDrawerState extends State<OrderDetailDrawer> {
       _priceRow(S.subtotal, order.subtotal),
       if (order.discount > 0)
         _priceRow(S.discount, -order.discount, isDiscount: true),
-      _priceRow(S.deliveryFee, order.deliveryFee),
+      // Delivery fee hidden
+      // _priceRow(S.deliveryFee, order.deliveryFee),
       Divider(color: AppTheme.borderColor, height: 20),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -38,7 +38,7 @@ class _OffersScreenState extends State<OffersScreen> {
   @override
   Widget build(BuildContext context) {
     return AdminLayout(
-      currentIndex: 6,
+      currentIndex: 5,
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

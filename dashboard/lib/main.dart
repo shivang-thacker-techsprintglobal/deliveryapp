@@ -9,7 +9,7 @@ import 'screens/categories_screen.dart';
 import 'screens/users_screen.dart';
 import 'screens/orders_screen.dart';
 import 'screens/drivers_screen.dart';
-import 'screens/restaurants_screen.dart';
+// import 'screens/restaurants_screen.dart'; // Restaurant tab hidden
 import 'screens/offers_screen.dart';
 
 void main() async {
@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
         '/users': (context) => const UsersScreen(),
         '/orders': (context) => const OrdersScreen(),
         '/drivers': (context) => const DriversScreen(),
-        '/restaurants': (context) => const RestaurantsScreen(),
+        // '/restaurants': (context) => const RestaurantsScreen(),
         '/offers': (context) => const OffersScreen(),
       },
     );

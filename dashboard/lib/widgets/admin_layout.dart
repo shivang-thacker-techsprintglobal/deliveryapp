@@ -47,11 +47,12 @@ class _AdminLayoutState extends State<AdminLayout> {
       activeIcon: Icons.delivery_dining,
       label: S.drivers,
     ),
-    _NavItem(
-      icon: Icons.storefront_outlined,
-      activeIcon: Icons.storefront,
-      label: S.restaurants,
-    ),
+    // Restaurant tab hidden — categories/meals are managed without restaurants
+    // _NavItem(
+    //   icon: Icons.storefront_outlined,
+    //   activeIcon: Icons.storefront,
+    //   label: S.restaurants,
+    // ),
     _NavItem(
       icon: Icons.local_offer_outlined,
       activeIcon: Icons.local_offer,
@@ -92,10 +93,10 @@ class _AdminLayoutState extends State<AdminLayout> {
       case 4:
         route = '/drivers';
         break;
+      // case 5:
+      //   route = '/restaurants';
+      //   break;
       case 5:
-        route = '/restaurants';
-        break;
-      case 6:
         route = '/offers';
         break;
       default:
@@ -313,12 +314,13 @@ class _AdminLayoutState extends State<AdminLayout> {
               color: AppTheme.textSecondary,
               splashRadius: 20,
             ),
-            IconButton(
-              onPressed: () => _settings.toggleLanguage(),
-              icon: const Icon(Icons.translate, size: 18),
-              color: AppTheme.textSecondary,
-              splashRadius: 20,
-            ),
+            // Language toggle hidden
+            // IconButton(
+            //   onPressed: () => _settings.toggleLanguage(),
+            //   icon: const Icon(Icons.translate, size: 18),
+            //   color: AppTheme.textSecondary,
+            //   splashRadius: 20,
+            // ),
           ],
         ),
       );
@@ -347,30 +349,31 @@ class _AdminLayoutState extends State<AdminLayout> {
               ),
             ],
           ),
-          const SizedBox(height: AppTheme.spaceS),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(S.language, style: AppTheme.smallText),
-              InkWell(
-                onTap: () => _settings.toggleLanguage(),
-                borderRadius: BorderRadius.circular(4),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  child: Text(
-                    _settings.isArabic ? 'EN' : 'AR',
-                    style: AppTheme.smallText.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.textPrimary,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // Language setting hidden
+          // const SizedBox(height: AppTheme.spaceS),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(S.language, style: AppTheme.smallText),
+          //     InkWell(
+          //       onTap: () => _settings.toggleLanguage(),
+          //       borderRadius: BorderRadius.circular(4),
+          //       child: Padding(
+          //         padding: const EdgeInsets.symmetric(
+          //           horizontal: 8,
+          //           vertical: 4,
+          //         ),
+          //         child: Text(
+          //           _settings.isArabic ? 'EN' : 'AR',
+          //           style: AppTheme.smallText.copyWith(
+          //             fontWeight: FontWeight.w600,
+          //             color: AppTheme.textPrimary,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
