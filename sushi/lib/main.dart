@@ -17,15 +17,12 @@ void main() async {
   // 1. Initialize bindings immediately
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Keep system nav/status bars reserved so bottom buttons are not covered.
-  await SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual,
-    overlays: SystemUiOverlay.values,
-  );
+  // Edge-to-edge; native MainActivity pads bottom for the nav bar.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.white,
+      systemNavigationBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark,
     ),
@@ -83,26 +80,6 @@ class MyApp extends StatelessWidget {
             primaryColor: const Color(0xFFF4A73D),
             scaffoldBackgroundColor: const Color(0xFF121212),
           ),
-          // Apply system bottom inset globally (Android gesture / 3-button nav).
-          builder: (context, child) {
-            final media = MediaQuery.of(context);
-            final bottomInset = media.viewPadding.bottom;
-            return MediaQuery(
-              data: media.copyWith(
-                padding: media.padding.copyWith(
-                  bottom: media.padding.bottom > 0
-                      ? media.padding.bottom
-                      : bottomInset,
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: media.padding.bottom > 0 ? 0 : bottomInset,
-                ),
-                child: child ?? const SizedBox.shrink(),
-              ),
-            );
-          },
           home: SplashScreen(firebaseInit: firebaseInit),
         );
       },
