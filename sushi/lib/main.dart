@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return MaterialApp(
-          title: 'Sushi App',
+          title: 'Sushi Delivery',
           debugShowCheckedModeBanner: false,
           themeMode: state.themeMode,
           locale: state.locale,

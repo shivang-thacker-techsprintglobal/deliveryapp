@@ -1,11 +1,11 @@
 {
-    "name": "sushi",
-    "short_name": "sushi",
+    "name": "Sushi Delivery",
+    "short_name": "Sushi Delivery",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Order fresh sushi and get it delivered to your door.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
