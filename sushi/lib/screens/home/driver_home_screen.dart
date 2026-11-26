@@ -51,9 +51,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   Future<void> _updateRoadRoute(OrderModel order) async {
     if (_currentPosition == null || order.deliveryLocation == null) {
-      if (_routePolylines.isNotEmpty && mounted) {
-        setState(() => _routePolylines = {});
-      }
       return;
     }
 
@@ -66,24 +63,24 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         '${origin.latitude.toStringAsFixed(3)},${origin.longitude.toStringAsFixed(3)}_'
         '${destination.latitude.toStringAsFixed(3)},${destination.longitude.toStringAsFixed(3)}';
     if (key == _lastRouteKey && _routePolylines.isNotEmpty) return;
-    _lastRouteKey = key;
 
     final points = await DirectionsService.instance.getRoute(
       origin: origin,
       destination: destination,
     );
-    if (!mounted) return;
+    if (!mounted || points.length < 2) return;
+
+    _lastRouteKey = key;
     setState(() {
-      _routePolylines = points.length < 2
-          ? {}
-          : {
-              Polyline(
-                polylineId: const PolylineId('road_route'),
-                points: points,
-                color: AppColors.vermillion,
-                width: 5,
-              ),
-            };
+      _routePolylines = {
+        Polyline(
+          polylineId: const PolylineId('road_route'),
+          points: points,
+          color: AppColors.vermillion,
+          width: 6,
+          geodesic: true,
+        ),
+      };
     });
   }
 
@@ -173,8 +170,17 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         distanceFilter: 10,
       ),
     ).listen((Position position) {
-      if (mounted) setState(() => _currentPosition = position);
+      if (!mounted) return;
+      setState(() => _currentPosition = position);
       _syncLocationToFirestore(position);
+      // Rebuild route once GPS is ready / moves (needed on iOS simulator/device).
+      if (_isViewingActiveOrder && _activeOrderId != null) {
+        FirebaseFirestore.instance.collection('orders').doc(_activeOrderId).get().then((doc) {
+          if (!mounted || !doc.exists) return;
+          final order = OrderModel.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+          _updateRoadRoute(order);
+        });
+      }
     });
   }
 
@@ -216,9 +222,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           final availableOrders = allOrders.where((o) => o.status == OrderStatus.readyForPickup && o.driverId == null).toList();
           final myActiveOrders = allOrders.where((o) => o.driverId == uid && o.status.index < OrderStatus.delivered.index).toList();
 
-          if (myActiveOrders.isNotEmpty) {
-            _activeOrderId = myActiveOrders.first.id;
-          } else {
+          // Open the order the driver tapped — not always the first one.
+          final selectedMatches = myActiveOrders.where((o) => o.id == _activeOrderId);
+          final viewingOrder = selectedMatches.isEmpty ? null : selectedMatches.first;
+          if (myActiveOrders.isEmpty || (_isViewingActiveOrder && viewingOrder == null)) {
             _activeOrderId = null;
             _isViewingActiveOrder = false;
           }
@@ -231,7 +238,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               backgroundColor: AppColors.ink,
               elevation: 0,
               leading: _isViewingActiveOrder 
-                ? IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white), onPressed: () => setState(() => _isViewingActiveOrder = false))
+                ? IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => setState(() {
+                      _isViewingActiveOrder = false;
+                      _lastRouteKey = null;
+                      _routePolylines = {};
+                    }),
+                  )
                 : null,
               actions: [
                 IconButton(
@@ -242,13 +256,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               ],
             ),
             drawer: _isViewingActiveOrder ? null : _buildDriverDrawer(),
-            body: (_isViewingActiveOrder && myActiveOrders.isNotEmpty)
-                ? _buildActiveOrderWorkflow(myActiveOrders.first)
+            body: (_isViewingActiveOrder && viewingOrder != null)
+                ? _buildActiveOrderWorkflow(viewingOrder)
                 : _buildAvailableOrdersList(availableOrders, myActiveOrders),
             floatingActionButton: _isViewingActiveOrder ? FloatingActionButton(
               onPressed: () async {
                 Position pos = await Geolocator.getCurrentPosition();
                 await _syncLocationToFirestore(pos);
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Location updated for this order')),
                 );
@@ -291,7 +306,12 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         title: Text('Order #${order.id.substring(0, 5)}', style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text('Status: ${order.status.name.toUpperCase()}'),
         trailing: const Icon(Icons.map, color: AppColors.vermillion),
-        onTap: () => setState(() => _isViewingActiveOrder = true),
+        onTap: () => setState(() {
+          _activeOrderId = order.id;
+          _isViewingActiveOrder = true;
+          _lastRouteKey = null;
+          _routePolylines = {};
+        }),
       ),
     );
   }
@@ -301,13 +321,34 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       elevation: 4,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: ListTile(
-        title: Text('Order #${order.id.substring(0, 5)}'),
-        subtitle: Text('${order.totalAmount} EGP'),
-        trailing: ElevatedButton(
-          onPressed: () => _updateOrderStatus(order.id, OrderStatus.driverAssigned),
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.vermillion),
-          child: const Text('ACCEPT', style: TextStyle(color: Colors.white)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Order #${order.id.substring(0, 5)}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text('${order.totalAmount} EGP'),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            ElevatedButton(
+              onPressed: () => _updateOrderStatus(order.id, OrderStatus.driverAssigned),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.vermillion,
+                minimumSize: const Size(88, 40),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              child: const Text('ACCEPT', style: TextStyle(color: Colors.white)),
+            ),
+          ],
         ),
       ),
     );
@@ -429,7 +470,17 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     final Map<String, dynamic> data = {'status': status.name, 'updatedAt': FieldValue.serverTimestamp()};
     if (status == OrderStatus.driverAssigned) {
       data['driverId'] = uid;
-      _activeOrderId = orderId; 
+      if (mounted) {
+        setState(() {
+          _activeOrderId = orderId;
+          _isViewingActiveOrder = true;
+          _lastRouteKey = null;
+          _routePolylines = {};
+        });
+      } else {
+        _activeOrderId = orderId;
+        _isViewingActiveOrder = true;
+      }
     }
     await FirebaseFirestore.instance.collection('orders').doc(orderId).update(data);
   }

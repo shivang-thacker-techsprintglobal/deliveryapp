@@ -53,33 +53,30 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
         '${origin.latitude.toStringAsFixed(3)},${origin.longitude.toStringAsFixed(3)}_'
         '${destination.latitude.toStringAsFixed(3)},${destination.longitude.toStringAsFixed(3)}';
     if (key == _lastRouteKey && _routePolylines.isNotEmpty) return;
-    _lastRouteKey = key;
 
     final points = await DirectionsService.instance.getRoute(
       origin: origin,
       destination: destination,
     );
-    if (!mounted) return;
+    if (!mounted || points.length < 2) return;
 
+    _lastRouteKey = key;
     setState(() {
-      _routePolylines = points.length < 2
-          ? {}
-          : {
-              Polyline(
-                polylineId: const PolylineId('road_route'),
-                points: points,
-                color: AppColors.vermillion,
-                width: 5,
-              ),
-            };
+      _routePolylines = {
+        Polyline(
+          polylineId: const PolylineId('road_route'),
+          points: points,
+          color: AppColors.vermillion,
+          width: 6,
+          geodesic: true,
+        ),
+      };
     });
 
-    if (points.length >= 2) {
-      final bounds = _boundsFrom(points);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 60));
-      });
-    }
+    final bounds = _boundsFrom(points);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 60));
+    });
   }
 
   LatLngBounds _boundsFrom(List<LatLng> points) {

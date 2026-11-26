@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Free-quota protection:
 /// - Caches routes so tiny GPS moves don't re-call the API
 /// - On real quota/billing exhaustion, stops calling until the next day
-/// - If the API is simply not enabled, skips for this app session only
+/// - API enablement issues are tracked per-API (not one global kill switch)
+/// - If both APIs fail, returns a straight line so the map still shows a path
 class DirectionsService {
   DirectionsService._();
   static final DirectionsService instance = DirectionsService._();
@@ -18,7 +19,8 @@ class DirectionsService {
   static const String _quotaFlagKey = 'directions_quota_exhausted_date';
 
   bool _quotaExhaustedToday = false;
-  bool _disabledThisSession = false;
+  bool _routesDisabledThisSession = false;
+  bool _legacyDisabledThisSession = false;
   bool _loadedQuotaFlag = false;
   final Map<String, List<LatLng>> _cache = {};
 
@@ -41,13 +43,6 @@ class DirectionsService {
     debugPrint('Directions stopped for today ($reason)');
   }
 
-  void _disableSession(String reason) {
-    _disabledThisSession = true;
-    debugPrint('Directions disabled this session ($reason)');
-  }
-
-  bool get _shouldSkip => _quotaExhaustedToday || _disabledThisSession;
-
   String _cacheKey(LatLng origin, LatLng destination) {
     String r(double v) => v.toStringAsFixed(3); // ~110m
     return '${r(origin.latitude)},${r(origin.longitude)}_'
@@ -59,17 +54,26 @@ class DirectionsService {
     required LatLng destination,
   }) async {
     await _ensureQuotaFlagLoaded();
-    if (_shouldSkip) return const [];
 
     final key = _cacheKey(origin, destination);
     final cached = _cache[key];
     if (cached != null) return cached;
 
-    var points = await _fetchRoutesApi(origin, destination);
-    if (points.isEmpty && !_shouldSkip) {
+    List<LatLng> points = const [];
+
+    if (!_quotaExhaustedToday && !_routesDisabledThisSession) {
+      points = await _fetchRoutesApi(origin, destination);
+    }
+
+    if (points.isEmpty && !_quotaExhaustedToday && !_legacyDisabledThisSession) {
       points = await _fetchLegacyDirections(origin, destination);
     }
-    if (points.isEmpty) return const [];
+
+    // Always show something on the map if road APIs are unavailable.
+    if (points.length < 2) {
+      points = [origin, destination];
+      debugPrint('Directions fallback: straight line (API unavailable or empty)');
+    }
 
     _cache[key] = points;
     return points;
@@ -111,6 +115,7 @@ class DirectionsService {
           .timeout(const Duration(seconds: 12));
 
       final bodyLower = response.body.toLowerCase();
+      debugPrint('Routes API HTTP ${response.statusCode}');
 
       if (response.statusCode == 429 ||
           bodyLower.contains('resource_exhausted') ||
@@ -123,18 +128,21 @@ class DirectionsService {
       if (response.statusCode == 403 ||
           bodyLower.contains('permission denied') ||
           bodyLower.contains('access_denied') ||
-          bodyLower.contains('billing')) {
+          bodyLower.contains('billing') ||
+          bodyLower.contains('api_key_ios_app_blocked') ||
+          bodyLower.contains('api_key_android_app_blocked') ||
+          bodyLower.contains('requests from this ios app')) {
         if (bodyLower.contains('billing') || bodyLower.contains('quota')) {
           await _markQuotaExhaustedToday('Routes API billing/quota');
         } else {
-          // API not enabled yet — don't spam failed calls this session.
-          _disableSession('Routes API not enabled / permission denied');
+          _routesDisabledThisSession = true;
+          debugPrint('Routes API disabled this session: ${response.body}');
         }
         return const [];
       }
 
       if (response.statusCode != 200) {
-        debugPrint('Routes API HTTP ${response.statusCode}');
+        debugPrint('Routes API body: ${response.body}');
         return const [];
       }
 
@@ -170,6 +178,7 @@ class DirectionsService {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       final status = data['status']?.toString() ?? '';
       final msg = (data['error_message'] ?? '').toString().toLowerCase();
+      debugPrint('Legacy Directions status: $status');
 
       if (status == 'OVER_QUERY_LIMIT' || status == 'OVER_DAILY_LIMIT') {
         await _markQuotaExhaustedToday(status);
@@ -180,7 +189,9 @@ class DirectionsService {
         if (msg.contains('billing') || msg.contains('quota')) {
           await _markQuotaExhaustedToday('Directions billing/quota');
         } else {
-          _disableSession('Directions not enabled: $msg');
+          // Do NOT disable Routes API when only legacy is unavailable.
+          _legacyDisabledThisSession = true;
+          debugPrint('Legacy Directions disabled this session: $msg');
         }
         return const [];
       }

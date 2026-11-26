@@ -65,7 +65,9 @@ class AppTheme {
           backgroundColor: AppColors.vermillion,
           foregroundColor: AppColors.white,
           elevation: 0,
-          minimumSize: const Size.fromHeight(52),
+          // Finite width — Size.fromHeight(infinity) breaks ListTile trailing buttons.
+          minimumSize: const Size(64, 48),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: GoogleFonts.sourceSans3(
             fontSize: 16,
@@ -78,7 +80,8 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.vermillion,
           side: const BorderSide(color: AppColors.vermillion, width: 1.5),
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: const Size(64, 48),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: GoogleFonts.sourceSans3(
             fontSize: 16,
