@@ -70,7 +70,7 @@ class WelcomeScreen extends StatelessWidget {
                     Icon(Icons.shopping_bag_outlined, color: Colors.white),
                     SizedBox(width: 10),
                     Text(
-                      'I am a Shopper',
+                      'Continue as Shopper',
                       style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -101,7 +101,7 @@ class WelcomeScreen extends StatelessWidget {
                     Icon(Icons.delivery_dining, color: AppColors.lightOrange),
                     SizedBox(width: 10),
                     Text(
-                      'I am a Driver',
+                      'Continue as Driver',
                       style: TextStyle(color: AppColors.lightOrange, fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],

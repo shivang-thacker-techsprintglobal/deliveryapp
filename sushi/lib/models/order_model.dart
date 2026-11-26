@@ -52,6 +52,19 @@ class OrderModel {
     this.isPaidToCompany = false,
   });
 
+  static GeoPoint? parseGeoPoint(dynamic value) {
+    if (value == null) return null;
+    if (value is GeoPoint) return value;
+    if (value is Map) {
+      final lat = value['latitude'] ?? value['_latitude'];
+      final lng = value['longitude'] ?? value['_longitude'];
+      if (lat is num && lng is num) {
+        return GeoPoint(lat.toDouble(), lng.toDouble());
+      }
+    }
+    return null;
+  }
+
   factory OrderModel.fromJson(Map<String, dynamic> json, String id) {
     return OrderModel(
       id: id,
@@ -67,8 +80,8 @@ class OrderModel {
       totalAmount: (json['totalAmount'] as num?)?.toDouble() ?? 0.0,
       createdAt: json['createdAt'] != null ? (json['createdAt'] as Timestamp).toDate() : DateTime.now(),
       updatedAt: json['updatedAt'] != null ? (json['updatedAt'] as Timestamp).toDate() : DateTime.now(),
-      deliveryLocation: json['deliveryLocation'],
-      driverLocation: json['driverLocation'],
+      deliveryLocation: parseGeoPoint(json['deliveryLocation']),
+      driverLocation: parseGeoPoint(json['driverLocation']),
       isPaidToCompany: json['isPaidToCompany'] ?? false,
     );
   }

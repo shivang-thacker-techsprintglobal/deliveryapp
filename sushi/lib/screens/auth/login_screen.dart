@@ -7,6 +7,7 @@ import '../../blocs/auth/auth_state.dart';
 // import 'package:sushi/services/biometric_service.dart'; // fingerprint disabled
 import 'register_screen.dart';
 import 'forget_password_screen.dart';
+import 'driver_auth/driver_login_screen.dart';
 import '../home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -153,7 +154,38 @@ class _LoginScreenState extends State<LoginScreen> {
                         //   ],
                         // ),
 
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 20),
+
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const DriverLoginScreen(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.delivery_dining, color: AppColors.lightOrange),
+                            label: const Text(
+                              'Continue as Driver',
+                              style: TextStyle(
+                                color: AppColors.lightOrange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.lightOrange, width: 1.5),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 30),
                         
                         // Bottom Link
                         Row(

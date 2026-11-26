@@ -1,5 +1,5 @@
 class S {
-  static bool _isArabic = true;
+  static bool _isArabic = false;
   static void setArabic(bool value) => _isArabic = value;
 
   static String get appTitle => _isArabic ? 'لوحة الإدارة' : 'Admin Dashboard';

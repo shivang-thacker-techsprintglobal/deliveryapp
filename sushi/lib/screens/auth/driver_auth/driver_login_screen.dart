@@ -5,6 +5,7 @@ import '../../../blocs/auth/auth_cubit.dart';
 import '../../../blocs/auth/auth_state.dart';
 // import '../../../services/biometric_service.dart'; // fingerprint disabled
 import '../../home/driver_home_screen.dart';
+import '../login_screen.dart';
 import 'driver_register_screen.dart';
 
 class DriverLoginScreen extends StatefulWidget {
@@ -56,18 +57,56 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                 decoration: const InputDecoration(labelText: 'Password', prefixIcon: Icon(Icons.lock)),
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () => context.read<AuthCubit>().login(_emailController.text, _passwordController.text),
-                child: const Text('LOGIN'),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () => context.read<AuthCubit>().login(
+                        _emailController.text.trim(),
+                        _passwordController.text.trim(),
+                      ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.lightOrange,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text('LOGIN'),
+                ),
               ),
-              // Fingerprint login disabled for now
-              // const SizedBox(height: 20),
-              // IconButton(
-              //   icon: const Icon(Icons.fingerprint, size: 50, color: AppColors.lightOrange),
-              //   onPressed: _handleBiometric,
-              // ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    );
+                  },
+                  icon: const Icon(Icons.shopping_bag_outlined, color: AppColors.lightOrange),
+                  label: const Text(
+                    'Continue as Shopper',
+                    style: TextStyle(
+                      color: AppColors.lightOrange,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.lightOrange, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
               TextButton(
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DriverRegisterScreen())),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DriverRegisterScreen()),
+                ),
                 child: const Text('New Driver? Register here'),
               ),
             ],

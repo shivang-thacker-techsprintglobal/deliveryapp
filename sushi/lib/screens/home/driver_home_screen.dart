@@ -11,8 +11,9 @@ import '../../widgets/app_colors.dart';
 import '../../models/order_model.dart';
 import '../../models/user_model.dart';
 import '../../models/restaurant_model.dart';
+import '../../services/directions_service.dart';
 import '../../services/restaurant_service.dart';
-import '../../screens/auth/welcome_screen.dart';
+import '../../screens/auth/driver_auth/driver_login_screen.dart';
 
 import '../driver_menu/driver_profile_screen.dart';
 import '../driver_menu/driver_orders_screen.dart';
@@ -35,6 +36,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   BitmapDescriptor? _driverIcon;
   BitmapDescriptor? _shopIcon;
   BitmapDescriptor? _customerIcon;
+  Set<Polyline> _routePolylines = {};
+  String? _lastRouteKey;
 
   /// First branch that has a map location (safe when branches is empty).
   GeoPoint? get _firstBranchLocation {
@@ -44,6 +47,44 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       if (branch.location != null) return branch.location;
     }
     return null;
+  }
+
+  Future<void> _updateRoadRoute(OrderModel order) async {
+    if (_currentPosition == null || order.deliveryLocation == null) {
+      if (_routePolylines.isNotEmpty && mounted) {
+        setState(() => _routePolylines = {});
+      }
+      return;
+    }
+
+    final origin = LatLng(_currentPosition!.latitude, _currentPosition!.longitude);
+    final destination = LatLng(
+      order.deliveryLocation!.latitude,
+      order.deliveryLocation!.longitude,
+    );
+    final key =
+        '${origin.latitude.toStringAsFixed(3)},${origin.longitude.toStringAsFixed(3)}_'
+        '${destination.latitude.toStringAsFixed(3)},${destination.longitude.toStringAsFixed(3)}';
+    if (key == _lastRouteKey && _routePolylines.isNotEmpty) return;
+    _lastRouteKey = key;
+
+    final points = await DirectionsService.instance.getRoute(
+      origin: origin,
+      destination: destination,
+    );
+    if (!mounted) return;
+    setState(() {
+      _routePolylines = points.length < 2
+          ? {}
+          : {
+              Polyline(
+                polylineId: const PolylineId('road_route'),
+                points: points,
+                color: const Color(0xFFF4A73D),
+                width: 5,
+              ),
+            };
+    });
   }
 
   @override
@@ -192,6 +233,13 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               leading: _isViewingActiveOrder 
                 ? IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white), onPressed: () => setState(() => _isViewingActiveOrder = false))
                 : null,
+              actions: [
+                IconButton(
+                  tooltip: 'Logout',
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  onPressed: _logoutDriver,
+                ),
+              ],
             ),
             drawer: _isViewingActiveOrder ? null : _buildDriverDrawer(),
             body: (_isViewingActiveOrder && myActiveOrders.isNotEmpty)
@@ -266,6 +314,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   }
 
   Widget _buildActiveOrderWorkflow(OrderModel order) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateRoadRoute(order));
+
     return Column(
       children: [
         Expanded(
@@ -290,6 +340,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               if (order.deliveryLocation != null)
                 Marker(markerId: const MarkerId('customer'), position: LatLng(order.deliveryLocation!.latitude, order.deliveryLocation!.longitude), icon: _customerIcon ?? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure), infoWindow: const InfoWindow(title: 'Customer')),
             },
+            polylines: _routePolylines,
           ),
         ),
         Container(
@@ -419,8 +470,25 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           },
         ),
         const Spacer(),
-        ListTile(leading: const Icon(Icons.logout, color: Colors.red), title: const Text('Logout', style: TextStyle(color: Colors.red)), onTap: () { FirebaseAuth.instance.signOut(); Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WelcomeScreen()), (r) => false); }),
+        ListTile(
+          leading: const Icon(Icons.logout, color: Colors.red),
+          title: const Text('Logout', style: TextStyle(color: Colors.red)),
+          onTap: () {
+            Navigator.pop(context);
+            _logoutDriver();
+          },
+        ),
       ]),
+    );
+  }
+
+  Future<void> _logoutDriver() async {
+    await FirebaseAuth.instance.signOut();
+    if (!mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const DriverLoginScreen()),
+      (route) => false,
     );
   }
 }

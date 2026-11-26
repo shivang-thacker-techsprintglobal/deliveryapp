@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/order_model.dart';
 import '../../models/restaurant_model.dart';
+import '../../services/directions_service.dart';
 import '../../services/restaurant_service.dart';
 import '../../widgets/app_colors.dart';
 import '../../blocs/orders/orders_cubit.dart';
@@ -22,12 +23,80 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   GoogleMapController? _mapController;
   RestaurantModel? _restaurant;
   BitmapDescriptor? _driverIcon, _shopIcon, _customerIcon;
+  Set<Polyline> _routePolylines = {};
+  String? _lastRouteKey;
 
   @override
   void initState() {
     super.initState();
     _loadRestaurantInfo();
     _loadCustomIcons();
+  }
+
+  Future<void> _updateRoadRoute(OrderModel order) async {
+    if (order.driverLocation == null || order.deliveryLocation == null) {
+      if (_routePolylines.isNotEmpty && mounted) {
+        setState(() => _routePolylines = {});
+      }
+      return;
+    }
+
+    final origin = LatLng(
+      order.driverLocation!.latitude,
+      order.driverLocation!.longitude,
+    );
+    final destination = LatLng(
+      order.deliveryLocation!.latitude,
+      order.deliveryLocation!.longitude,
+    );
+    final key =
+        '${origin.latitude.toStringAsFixed(3)},${origin.longitude.toStringAsFixed(3)}_'
+        '${destination.latitude.toStringAsFixed(3)},${destination.longitude.toStringAsFixed(3)}';
+    if (key == _lastRouteKey && _routePolylines.isNotEmpty) return;
+    _lastRouteKey = key;
+
+    final points = await DirectionsService.instance.getRoute(
+      origin: origin,
+      destination: destination,
+    );
+    if (!mounted) return;
+
+    setState(() {
+      _routePolylines = points.length < 2
+          ? {}
+          : {
+              Polyline(
+                polylineId: const PolylineId('road_route'),
+                points: points,
+                color: const Color(0xFFF4A73D),
+                width: 5,
+              ),
+            };
+    });
+
+    if (points.length >= 2) {
+      final bounds = _boundsFrom(points);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 60));
+      });
+    }
+  }
+
+  LatLngBounds _boundsFrom(List<LatLng> points) {
+    var minLat = points.first.latitude;
+    var maxLat = points.first.latitude;
+    var minLng = points.first.longitude;
+    var maxLng = points.first.longitude;
+    for (final p in points) {
+      minLat = minLat < p.latitude ? minLat : p.latitude;
+      maxLat = maxLat > p.latitude ? maxLat : p.latitude;
+      minLng = minLng < p.longitude ? minLng : p.longitude;
+      maxLng = maxLng > p.longitude ? maxLng : p.longitude;
+    }
+    return LatLngBounds(
+      southwest: LatLng(minLat, minLng),
+      northeast: LatLng(maxLat, maxLng),
+    );
   }
 
   Future<void> _loadCustomIcons() async {
@@ -91,29 +160,30 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
           
           final order = OrderModel.fromJson(snapshot.data!.data() as Map<String, dynamic>, snapshot.data!.id);
 
-          // Move camera after this frame — never animate during build.
-          if (order.driverLocation != null) {
-            final driverLatLng = LatLng(
-              order.driverLocation!.latitude,
-              order.driverLocation!.longitude,
-            );
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _mapController?.animateCamera(CameraUpdate.newLatLng(driverLatLng));
-            });
-          }
+          // Fetch road route off the build method.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _updateRoadRoute(order);
+          });
 
           return Column(
             children: [
               Expanded(
                 child: GoogleMap(
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(order.deliveryLocation?.latitude ?? 30.0, order.deliveryLocation?.longitude ?? 31.0),
+                    target: LatLng(
+                      order.deliveryLocation?.latitude ??
+                          order.driverLocation?.latitude ??
+                          0,
+                      order.deliveryLocation?.longitude ??
+                          order.driverLocation?.longitude ??
+                          0,
+                    ),
                     zoom: 14,
                   ),
                   onMapCreated: (c) => _mapController = c,
                   myLocationButtonEnabled: false,
                   markers: _buildMarkers(order),
-                  polylines: _buildPolylines(order),
+                  polylines: _routePolylines,
                 ),
               ),
               _buildStatusCard(order),
@@ -178,21 +248,6 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     }
 
     return markers;
-  }
-
-  Set<Polyline> _buildPolylines(OrderModel order) {
-    if (order.driverLocation == null || order.deliveryLocation == null) return {};
-    return {
-      Polyline(
-        polylineId: const PolylineId('route'),
-        points: [
-          LatLng(order.driverLocation!.latitude, order.driverLocation!.longitude),
-          LatLng(order.deliveryLocation!.latitude, order.deliveryLocation!.longitude),
-        ],
-        color: const Color(0xFFF4A73D),
-        width: 5,
-      )
-    };
   }
 
   Widget _buildStatusCard(OrderModel order) {

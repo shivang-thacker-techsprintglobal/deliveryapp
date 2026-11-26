@@ -5,7 +5,7 @@ class SettingsProvider extends ChangeNotifier {
   factory SettingsProvider() => _instance;
   SettingsProvider._internal();
 
-  bool _isArabic = true;
+  bool _isArabic = false;
   bool get isArabic => _isArabic;
   TextDirection get textDirection =>
       _isArabic ? TextDirection.rtl : TextDirection.ltr;
